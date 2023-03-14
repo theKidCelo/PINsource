@@ -1,5 +1,6 @@
 // load .env data into process.env
 require('dotenv').config();
+const resourcesQueries = require('./db/queries/resources');
 
 // Web server config
 const sassMiddleware = require('./lib/sass-middleware');
@@ -49,7 +50,9 @@ app.get('/', (req, res) => {
 });
 
 app.get('/resources', (req, res) => {
-  return res.render('resources');
+  resourcesQueries.getResources().then(data => {
+    return res.render('resources', {resources: data});
+  });
 });
 
 app.get('/resources/search', (req, res) => {
