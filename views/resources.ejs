@@ -8,6 +8,10 @@
 </head>
 <body>
   <h1>Resources Saved to Site</h1>
-  <%= JSON.stringify(resources) %>
+  <ul>
+    <% for (let resource of resources) { %>
+      <li><h3> <%= resource.title %> <%= resource.description %> <%= resource.url %></h3></li>
+    <% } %>
+  </ul>
 </body>
 </html>
