@@ -29,15 +29,15 @@ app.use(express.static('public'));
 // Separated Routes for each Resource
 // Note: Feel free to replace the example routes below with your own
 const userApiRoutes = require('./routes/users-api');
-const widgetApiRoutes = require('./routes/widgets-api');
 const usersRoutes = require('./routes/users');
+const searchRoutes = require('./routes/search');
 
 // Mount all resource routes
 // Note: Feel free to replace the example routes below with your own
 // Note: Endpoints that return data (eg. JSON) usually start with `/api`
 app.use('/api/users', userApiRoutes);
-app.use('/api/widgets', widgetApiRoutes);
 app.use('/users', usersRoutes);
+// app.use('/search', searchRoutes);
 // Note: mount other resources here, using the same pattern above
 
 // Home page
@@ -48,7 +48,13 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
+app.get('/resources', (req, res) => {
+  return res.render('resources');
+});
 
+app.get('/resources/search', (req, res) => {
+  return res.render('search');
+});
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
