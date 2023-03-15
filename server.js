@@ -1,6 +1,7 @@
 // load .env data into process.env
 require('dotenv').config();
 const resourcesQueries = require('./db/queries/resources');
+const searchQueries = require('./db/queries/search');
 
 // Web server config
 const sassMiddleware = require('./lib/sass-middleware');
@@ -38,7 +39,8 @@ const searchRoutes = require('./routes/search');
 // Note: Endpoints that return data (eg. JSON) usually start with `/api`
 app.use('/api/users', userApiRoutes);
 app.use('/users', usersRoutes);
-// app.use('/search', searchRoutes);
+app.use('/search:id', searchRoutes);
+
 // Note: mount other resources here, using the same pattern above
 
 // Home page
@@ -56,9 +58,15 @@ app.get('/resources', (req, res) => {
 });
 
 app.get('/resources/search', (req, res) => {
-  return res.render('search');
+  searchQueries.searchResources().then(data => {
+    return res.render('search', {resources: data});
+  });
+});
+
+app.get('/add-resource', (req, res) => {
+  return res.render('resource_new');
 });
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`);
+  console.log(`PINsource listening on port ${PORT}`);
 });

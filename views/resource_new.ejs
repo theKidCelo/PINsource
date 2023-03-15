@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add New Resource</title>
+</head>
+<body>
+  <h3>Add New Resource</h3>
+  <form class="form-inline" action="/add-resource" method="POST">
+    <div class="form-group mb-2">
+      <label for="title"></label>
+      <input
+        class="form-control"
+        type="text"
+        name="longURL"
+        placeholder="Title"
+        style="width: 300px; margin: 1em"
+      />
+      <label for="url"></label>
+      <input
+        class="form-control"
+        type="text"
+        name="url"
+        placeholder="http://"
+        style="width: 300px; margin: 1em"
+      />
+      <label for="longURL">Category:</label>
+      <input
+        class="form-control"
+        type="text"
+        name="longURL"
+        placeholder="Category"
+        style="width: 300px; margin: 1em"
+      />
+      <label for="description"></label>
+      <input
+        class="form-control"
+        type="text"
+        name="description"
+        placeholder="Add a short summary of the resource"
+        style="width: 300px; margin: 1em"
+      />
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </form>
+</body>
+</html>

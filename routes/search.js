@@ -1,12 +1,20 @@
-// //search function
-// router.get('/search/:title', function(req, res, next) {
-//   let title = req.params.title;
-//   Resources.find({title: title}, function (err, resources) {
-//     if (err) {
-//       return res.render('/search', {resources: null});
-//     }
-//     res.render('/search', {resources: resources});
-//   });
-// });
+//search function
 
-// module.exports = router;
+const express = require('express');
+const router  = express.Router();
+const searchQueries = require('../db/queries/search');
+
+router.get('/search/:id', function(req, res) {
+  const { id } = req.params;
+  try {
+    const allResources = searchQueries.searchResources(id);
+    res.json({
+      status: "success",
+      allResources,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+module.exports = router;
