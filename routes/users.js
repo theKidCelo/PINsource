@@ -20,5 +20,33 @@ module.exports = db => {
         res.status(500).json({ error: err.message });
       });
   });
+
+
+  router.get("/login/:id", (req, res) => {
+    req.session.userId = req.params.id;
+    res.redirect("/");
+  });
+
+  router.get("/logout", (req, res) => {
+    req.session.userId = null;
+    res.redirect("/");
+  });
+
+  router.get("/me", (req, res) => {
+    const userId = req.session.userId;
+    if (!userId) {
+      res.send({ message: "not logged in" });
+      return;
+    }
+
+    //function to query database to get user info
+    res.json(userId);
+  });
+
+  router.post("/new", (req, res) => {
+    const user = req.body;
+    //function to insert user into database
+  });
+
   return router;
 };

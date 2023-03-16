@@ -7,6 +7,8 @@ const searchQueries = require('./db/queries/search');
 const sassMiddleware = require('./lib/sass-middleware');
 const express = require('express');
 const morgan = require('morgan');
+const bodyParser = require("body-parser");
+const cookieSession = require("cookie-session");
 
 const PORT = process.env.PORT || 8080;
 const app = express();
@@ -27,6 +29,15 @@ app.use(
   })
 );
 app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1'],
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}));
+
+const { Pool } = require("pg");
+const dbParams = require("./lib/db.js");
 
 // Separated Routes for each Resource
 // Note: Feel free to replace the example routes below with your own
