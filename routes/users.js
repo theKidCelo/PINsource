@@ -6,7 +6,6 @@
  */
 const express = require("express");
 const router = express.Router();
-
 const dbHelperFunctions = require("../db/queries/users_resources");
 
 module.exports = db => {
@@ -48,7 +47,7 @@ module.exports = db => {
 
   router.get("/logout", (req, res) => {
     req.session.userId = null;
-    res.redirect("/");
+    res.redirect("/login");
   });
 
   //-------------User Profile page------------------//

@@ -8,7 +8,7 @@ module.exports = db => {
     const userId = req.session.userId;
 
     if (!userId) {
-      res.redirect("/");
+      res.redirect("/login");
     }
     let options = req.query;
 
@@ -30,7 +30,7 @@ module.exports = db => {
     const userId = req.session.userId;
 
     if (!userId) {
-      res.redirect("/");
+      res.redirect("/login");
     }
 
     let options = {};
@@ -43,6 +43,12 @@ module.exports = db => {
   });
 
   //add new resource
+  router.get("/add-resource", (req, res) => {
+    if (req.session.userId) {
+      res.render("resource_new");
+    }
+  });
+
   router.post("/add-resource", (req, res) => {
     console.log(req.body);
 
