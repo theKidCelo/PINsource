@@ -1,7 +1,5 @@
 // load .env data into process.env
 require('dotenv').config();
-const resourcesQueries = require('./db/queries/resources');
-const searchQueries = require('./db/queries/search');
 
 // Web server config
 const sassMiddleware = require('./lib/sass-middleware');
@@ -38,19 +36,19 @@ app.use(cookieSession({
 
 const { Pool } = require("pg");
 const dbParams = require("./lib/db.js");
+const db = new Pool(dbParams);
+db.connect();
 
 // Separated Routes for each Resource
 // Note: Feel free to replace the example routes below with your own
-const userApiRoutes = require('./routes/users-api');
 const usersRoutes = require('./routes/users');
-const searchRoutes = require('./routes/search');
+const resourceRoutes = require('./routes/resources');
 
 // Mount all resource routes
 // Note: Feel free to replace the example routes below with your own
 // Note: Endpoints that return data (eg. JSON) usually start with `/api`
-app.use('/api/users', userApiRoutes);
-app.use('/users', usersRoutes);
-app.use('/search:id', searchRoutes);
+app.use('/api/users', usersRoutes(db));
+app.use('/api/resources', resourceRoutes(db));
 
 // Note: mount other resources here, using the same pattern above
 
@@ -60,22 +58,6 @@ app.use('/search:id', searchRoutes);
 
 app.get('/', (req, res) => {
   res.render('index');
-});
-
-app.get('/resources', (req, res) => {
-  resourcesQueries.getResources().then(data => {
-    return res.render('resources', {resources: data});
-  });
-});
-
-app.get('/resources/search', (req, res) => {
-  searchQueries.searchResources().then(data => {
-    return res.render('search', {resources: data});
-  });
-});
-
-app.get('/add-resource', (req, res) => {
-  return res.render('resource_new');
 });
 
 app.listen(PORT, () => {
