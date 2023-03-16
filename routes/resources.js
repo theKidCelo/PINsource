@@ -13,9 +13,9 @@ module.exports = db => {
     let options = req.query;
 
     dbHelperFunctions.getAllResources(db, options, 60).then(data => {
-      data.push(res.locals.user);
-      console.log(data);
-      res.render("index", { data });
+      const user = res.locals.user;
+      res.render("index", { data, user });
+      // res.render("index", { data });
       res.status(200);
     });
   });
@@ -30,16 +30,18 @@ module.exports = db => {
     options.userId = userId;
 
     dbHelperFunctions.getAllResources(db, options, 60).then(data => {
-      data.push(res.locals.user);
-      res.render("index", { data });
+      const user = res.locals.user;
+      res.render("index", { data, user });
+      // res.render("index", { data });
       res.status(200);
     });
   });
 
   //// Getting to the creation page
   router.get("/add-resource", auth, (req, res) => {
+    const user = res.locals.user;
     if (req.session.userId) {
-      res.render("resource_new");
+      res.render("resource_new", {user});
     } else {
       res.redirect("/api/users/login");
     }

@@ -73,8 +73,8 @@ app.get('/', auth, (req, res) => {
 // });
 
   dbHelperFunctions.getAllResources(db, 60).then(data => {
-    data.push(res.locals.user);
-    res.render("index", { data });
+    const user = res.locals.user;
+    res.render("index", { data, user });
     res.status(200);
   });
 });
