@@ -31,7 +31,7 @@ module.exports = db => {
     });
   });
 
-  router.get("/delete/:id", (req, res) => {
+  router.post("/delete/:id", (req, res) => {
     dbHelperFunctions.deleteResource(db, req.params.id).then(data => {
       console.log("show me data! ", data);
       res.redirect("index", { data });
