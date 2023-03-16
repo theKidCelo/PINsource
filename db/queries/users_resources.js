@@ -124,8 +124,8 @@ const getAllResources = function(db, options, limit = 20) {
     LEFT OUTER JOIN resource_ratings ON ratings.resource_id = resources.id
     LEFT OUTER JOIN liked_resources ON liked_resources.resource_id = resources.id `;
 
-  if (options.category) {
-    queryParams.push(options.category);
+  if (options.category_id) {
+    queryParams.push(options.category_id);
     queryString += `WHERE resources.category_id = $${queryParams.length} `;
   }
 
@@ -140,11 +140,11 @@ const getAllResources = function(db, options, limit = 20) {
   }
 
   queryString += `
-    GROUP BY properties.id
+    GROUP BY resources.id, resource_ratings.id, liked_resources.id
   `;
   if (options.ratings) {
     queryParams.push(`${options.ratings}`);
-    queryString += `HAVING avg(rating) >= $${queryParams.length}`;
+    queryString += `HAVING avg(resource_ratings.rating) >= $${queryParams.length}`;
   }
 
   queryParams.push(limit);
