@@ -35,7 +35,7 @@ app.use(cookieSession({
 }));
 
 const { Pool } = require("pg");
-const dbParams = require("./lib/db.js");
+const dbParams = require("./db/connection");
 const db = new Pool(dbParams);
 db.connect();
 
@@ -59,6 +59,7 @@ app.use('/api/resources', resourceRoutes(db));
 app.get('/', (req, res) => {
   const data = [];
   res.render("index", { data });
+  // res.redirect("/api/resources");
 });
 
 app.listen(PORT, () => {

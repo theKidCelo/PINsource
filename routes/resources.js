@@ -19,6 +19,13 @@ module.exports = db => {
     });
   });
 
+  //// Getting to the creation page
+  router.get("/add-resource", (req, res) => {
+    if (req.session.userId) {
+      res.render("resource_new");
+    }
+  });
+
   router.post("/add-resource", (req, res) => {
     console.log(req.body);
 

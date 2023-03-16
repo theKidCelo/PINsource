@@ -15,10 +15,11 @@
       crossorigin="anonymous"
     />
 
-    <title>Log In - On/Off</title>
+    <title>PINsource - Log In</title>
   </head>
 
   <body>
+    <%-include("./partials/header") %>
     <main style="margin: 1em">
       <h3 style="margin-bottom: 1em">Log Into Your Account</h3>
       <form action="/api/users/login" method="POST">

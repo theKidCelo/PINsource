@@ -15,7 +15,8 @@
     <script type="text/javascript" src="/scripts/app.js"></script>
   </head>
   <body>
-    <h1>Hello World!</h1>
+    <%-include("./partials/header") %>
+    <h1>PINsource</h1>
     <i class="far fa-heart"></i>
     <i class="fas fa-heart"></i>
     <i class="far fa-star"></i>
@@ -39,7 +40,7 @@
     <div class="card-columns">
 
       <% for(let el of data) { %>
-        <div class="card">
+        <div class="card" height="500px">
           <header>
             <img class="img-thumbnail" src="<%= el.user_profile_pic %>" width="100px" height="100px" alt="User profile picture">
             <p> <%= el.user_username %> </p>
@@ -48,16 +49,21 @@
           </header>
           <div class="card-body">
           <content>
-              <h5 class="card-title"><%= el.title %></h5>
+            <a href="<%= el.url %>" target="#blank"> <h5 class="card-title"><%= el.title %></h5> </a>
               <p class="card-text"><%= el.description %></p>
           </content>
-          <img class="img-thumbnail" src="<%= el.category_thumbnail %>" width="100px" height="100px" alt="Category image">
         </div>
           <footer class="text-muted">
-            <i class="far fa-heart"></i> <%= el.number_of_likes %>
-            <i class="far fa-comment-dots"></i> CHAT
-            <i class="far fa-star"></i> <%= el.average_rating %>
+            <div>
+              <i class="far fa-heart"></i> <%= el.number_of_likes %>
+            </div>
+            <div>
+              <i class="far fa-comment-dots"></i> CHAT
+            </div>
+            <div>
+              <i class="far fa-star"></i> <%= el.average_rating %>
             <i class="fas fa-star"></i>
+            </div>
           </footer>
         </div>
       <% } %>
@@ -84,28 +90,5 @@
         </div>
     <div class="card-footer text-muted"></div>
   </div>
-  <!-- new post section -->
-  <div class="card text-center">
-    <div class="card-header"></div>
-    <div class="card-body">
-        <h4 class="card-title"></h4>
-        <p class="card-text">
-          <form class="form-inline" action="/api/resources/new" method="POST">
-            <div class="form-group mb-2" style="margin: 0 auto">
-              <label for="title">Title:</label>
-                <input class="form-control" type="text" name="title" placeholder="title" style="width: 300px; margin: 1em">
-              <label for="email">Category:</label>
-                <input class="form-control" type="number" name="category_id" placeholder="3" style="width: 300px; margin: 1em">
-                <label for="description">Description:</label>
-                <input class="form-control" type="text" name="description" placeholder="say something about it" style="width: 300px; margin: 1em">
-                <label for="url">URL:</label>
-                <input class="form-control" type="text" name="url" placeholder="url" style="width: 300px; margin: 1em">
-                <button type="submit" class="btn btn-primary">Submit</button>
-              </div>
-          </form>
-        </p>
-      </div>
-  <div class="card-footer text-muted"></div>
-</div>
   </body>
 </html>
