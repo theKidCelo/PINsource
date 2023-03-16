@@ -7,6 +7,7 @@
 const express = require("express");
 const router = express.Router();
 const dbHelperFunctions = require("../db/queries/users_resources");
+const moment = require("moment");
 
 module.exports = db => {
   router.get("/", (req, res) => {
@@ -59,8 +60,8 @@ module.exports = db => {
     }
 
     dbHelperFunctions.getUserWithId(db, userId).then(user => {
-      console.log(user);
-      res.render("usersProfile", user);
+      console.log(moment(user.creation_date));
+      res.render("usersProfile", { user });
     });
   });
 

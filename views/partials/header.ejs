@@ -1,11 +1,21 @@
+<script type="text/javascript" src="/scripts/blotter.min.js"></script>
+<script
+  type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/Blotter/0.1.0/materials/fliesMaterial.min.js"
+></script>
+
 <div class="header">
   <nav style="height: 86px" class="navbar navbar-expand-md">
-    <a class="navbar-brand" href="resources">PINsource - Add New Resource</a>
+    <a class="navbar-brand" href="/api/resources"></a>
 
     <div class="btn-group">
+      <% if(typeof user !== 'undefined') { %>
+      <h4 style=" margin-right: 1rem">Welcome, <%= user.name %></h4>
+      <% } %>
+
       <button
         type="button"
-        class="btn btn-secondary dropdown-toggle"
+        class="btn btn-outline-dark dropdown-toggle"
         data-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
@@ -13,22 +23,50 @@
         <i class="fas fa-ellipsis-h"></i>
       </button>
       <div class="dropdown-menu dropdown-menu-right">
+        <% if(typeof user !== 'undefined') { %>
         <button class="dropdown-item" type="button">
-          <a href="/my-resources">My Resources</a>
+          <a href="/api/resources/myResources">My Resources</a>
         </button>
         <button class="dropdown-item" type="button">
-          <a href="/me">My Profile</a>
+          <a href="/api/users/me">My Profile</a>
         </button>
         <button class="dropdown-item" type="button">
-          <a href="/add-resource">New Post</a>
+          <a href="/api/resources/new">New Post</a>
         </button>
         <button class="dropdown-item" type="button">
-          <a href="/login">Login</a>
+          <a href="/api/users/logout">Logout</a>
+        </button>
+        <% } else { %>
+        <button class="dropdown-item" type="button">
+          <a href="/api/users/login">Login</a>
         </button>
         <button class="dropdown-item" type="button">
-          <a href="/logout">Logout</a>
+          <a href="/api/users/new">Register</a>
         </button>
+        <% } %>
       </div>
     </div>
   </nav>
 </div>
+
+<script>
+  let text = new Blotter.Text("N O T E S", {
+    family: "Monsterrat",
+    size: 75,
+    weight: 700,
+    fill: "#000",
+    paddingLeft: 18,
+    paddingRight: 0,
+    paddingTop: 74,
+    paddingBottom: 0
+  });
+  let material = new Blotter.FliesMaterial();
+  material.uniforms.uPointCellWidth.value = 0.018;
+  material.uniforms.uPointRadius.value = 1;
+  material.uniforms.uSpeed.value = 4;
+  let blotter = new Blotter(material, {
+    texts: text
+  });
+  let scope = blotter.forText(text);
+  scope.appendTo(document.querySelector(".navbar-brand"));
+</script>
