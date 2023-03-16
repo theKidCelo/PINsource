@@ -10,6 +10,7 @@ LEFT OUTER JOIN users ON resources.user_id = users.id
 WHERE resources.category_id = 1
   AND (upper(resources.title) LIKE '%JAVA%' OR upper(resources.description) LIKE '%JAVA%')
   -- AND (liked_resources.user_id = 2 OR resources.user_id = 2)
+  AND resources.id = 1
 
 
 GROUP BY resources.id, users.username, users.profile_pic,

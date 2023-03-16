@@ -10,7 +10,7 @@
 
     <div class="btn-group">
       <% if(typeof user !== 'undefined') { %>
-      <h4 style=" margin-right: 1rem">Welcome, <%= user.name %></h4>
+      <h4 style=" margin-right: 1rem">Welcome, <%= user.username %></h4>
       <% } %>
 
       <button
@@ -25,13 +25,13 @@
       <div class="dropdown-menu dropdown-menu-right">
         <% if(typeof user !== 'undefined') { %>
         <button class="dropdown-item" type="button">
-          <a href="/api/resources/myResources">My Resources</a>
+          <a href="/api/resources/my-resources">My Resources</a>
         </button>
         <button class="dropdown-item" type="button">
           <a href="/api/users/me">My Profile</a>
         </button>
         <button class="dropdown-item" type="button">
-          <a href="/api/resources/new">New Post</a>
+          <a href="/api/resources/add-resource">New Post</a>
         </button>
         <button class="dropdown-item" type="button">
           <a href="/api/users/logout">Logout</a>
@@ -41,7 +41,7 @@
           <a href="/api/users/login">Login</a>
         </button>
         <button class="dropdown-item" type="button">
-          <a href="/api/users/new">Register</a>
+          <a href="/api/users/register">Register</a>
         </button>
         <% } %>
       </div>

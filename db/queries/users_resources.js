@@ -193,6 +193,29 @@ const getAllResources = function(db, options, limit = 20) {
 };
 exports.getAllResources = getAllResources;
 
+////get resource from resource_id
+const getResourceFromId = function(db, resource_id) {
+  const queryParams = [resource_id];
+  let queryString = `
+    SELECT resources.*, users.username as username, users.profile_pic as user_profile_pic, count(liked_resources.resource_id) as number_of_likes, round(avg(resource_ratings.rating),2) as average_rating
+    FROM resources
+    LEFT OUTER JOIN liked_resources ON liked_resources.resource_id = resources.id
+    LEFT OUTER JOIN ratings ON resource_ratings.resource_id = resources.id
+    LEFT OUTER JOIN users ON resources.user_id = users.id
+    LEFT OUTER JOIN categories ON resources.category_id = categories.id
+    WHERE resources.id = $${queryParams.length}
+    GROUP BY resources.id, users.username, users.profile_pic;
+  `;
+
+  return db
+    .query(queryString, queryParams)
+    .then(res => res.rows)
+    .catch(err => {
+      console.error("query error", err.stack);
+    });
+};
+exports.getResourceFromId = getResourceFromId;
+
 //add new resource
 const addResource = function(db, newResourceParams) {
   const queryParams = [
