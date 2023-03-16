@@ -10,11 +10,10 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css"
       type="text/css"
     />
-
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
     <script type="text/javascript" src="/scripts/app.js"></script>
   </head>
-
   <body>
     <h1>Hello World!</h1>
     <i class="far fa-heart"></i>
@@ -28,7 +27,6 @@
     <i class="fas fa-arrow-up"></i>
     <i class="far fa-file"></i>
     <i class="fas fa-file"></i>
-
     <form class="form-inline" action="/api/resources" method="GET">
       <div class="form-group mb-2" style="margin: 0 auto">
           <input class="form-control" type="hidden" name="userId" value=2 >
@@ -36,62 +34,61 @@
         </div>
     </form>
 
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">User</th>
-          <th scope="col">title</th>
-          <th scope="col">description</th>
-          <th scope="col">url</th>
-          <th scope="col">#likes</th>
-          <th scope="col">rating</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for(let el of data) { %>
-          <tr>
-            <td><%= el.user_id%></td>
-            <td><%= el.title%></td>
-            <td><%= el.description%></td>
-            <td><%= el.url%></td>
-            <td><%= el.number_of_likes%></td>
-            <td><%= el.average_rating%></td>
-          </tr>
-        <% } %>
-      </tbody>
-    </table>
+    <!-- This is the card section -->
 
-      <!-- search bar -->
-      <div class="card text-center">
-        <div class="card-header"></div>
+    <div class="card-columns">
 
-        <div class="card-body">
-            <h4 class="card-title">Search </h4>
-            <p class="card-text">
-              <form class="form-inline" action="/api/resources" method="GET">
-                <div class="form-group mb-2" style="margin: 0 auto">
-                  <label for="email">Rating:</label>
-                    <input class="form-control" type="text" name="ratings" placeholder="rating" style="width: 300px; margin: 1em">
-                  <label for="email">Category:</label>
-                    <input class="form-control" type="number" name="category_id" placeholder="3" style="width: 300px; margin: 1em">
-                    <label for="keyword">Keyword:</label>
-                    <input class="form-control" type="text" name="keyword" placeholder="keyword" style="width: 300px; margin: 1em">
-                    <button type="submit" class="btn btn-primary">Search</button>
-                  </div>
-              </form>
-
-            </p>
-          </div>
-      <div class="card-footer text-muted"></div>
+      <% for(let el of data) { %>
+        <div class="card">
+          <header>
+            <img class="img-thumbnail" src="<%= el.user_profile_pic %>" width="100px" height="100px" alt="User profile picture">
+            <p> <%= el.user_username %> </p>
+            <i class="far fa-trash-alt"></i>
+            <i class="far fa-edit"></i>
+          </header>
+          <div class="card-body">
+          <content>
+              <h5 class="card-title"><%= el.title %></h5>
+              <p class="card-text"><%= el.description %></p>
+          </content>
+          <img class="img-thumbnail" src="<%= el.category_thumbnail %>" width="100px" height="100px" alt="Category image">
+        </div>
+          <footer class="text-muted">
+            <i class="far fa-heart"></i> <%= el.number_of_likes %>
+            <i class="far fa-comment-dots"></i> CHAT
+            <i class="far fa-star"></i> <%= el.average_rating %>
+            <i class="fas fa-star"></i>
+          </footer>
+        </div>
+      <% } %>
     </div>
 
-    <!-- new resource -->
+    <!-- this is the search bar -->
+    <div class="card text-center">
+      <div class="card-header"></div>
+      <div class="card-body">
+          <h4 class="card-title">Search </h4>
+          <p class="card-text">
+            <form class="form-inline" action="/api/resources" method="GET">
+              <div class="form-group mb-2" style="margin: 0 auto">
+                <label for="email">Rating:</label>
+                  <input class="form-control" type="text" name="ratings" placeholder="rating" style="width: 300px; margin: 1em">
+                <label for="email">Category:</label>
+                  <input class="form-control" type="number" name="category_id" placeholder="3" style="width: 300px; margin: 1em">
+                  <label for="keyword">Keyword:</label>
+                  <input class="form-control" type="text" name="keyword" placeholder="keyword" style="width: 300px; margin: 1em">
 
+                </div>
+            </form>
+          </p>
+        </div>
+    <div class="card-footer text-muted"></div>
+  </div>
+  <!-- new post section -->
   <div class="card text-center">
     <div class="card-header"></div>
-
     <div class="card-body">
-        <h4 class="card-title">What's good out there? </h4>
+        <h4 class="card-title"></h4>
         <p class="card-text">
           <form class="form-inline" action="/api/resources/new" method="POST">
             <div class="form-group mb-2" style="margin: 0 auto">
@@ -101,12 +98,11 @@
                 <input class="form-control" type="number" name="category_id" placeholder="3" style="width: 300px; margin: 1em">
                 <label for="description">Description:</label>
                 <input class="form-control" type="text" name="description" placeholder="say something about it" style="width: 300px; margin: 1em">
-                <label for="url">link:</label>
+                <label for="url">URL:</label>
                 <input class="form-control" type="text" name="url" placeholder="url" style="width: 300px; margin: 1em">
                 <button type="submit" class="btn btn-primary">Submit</button>
               </div>
           </form>
-
         </p>
       </div>
   <div class="card-footer text-muted"></div>
