@@ -5,6 +5,8 @@ require('dotenv').config();
 const sassMiddleware = require('./lib/sass-middleware');
 const express = require('express');
 const morgan = require('morgan');
+const { getResources } = require('./db/queries/user-resource')
+console.log(getResources)
 
 const PORT = process.env.PORT || 8080;
 const app = express();
