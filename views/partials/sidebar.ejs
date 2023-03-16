@@ -1,0 +1,33 @@
+<form class="sidebar" action="/resources" method="GET">
+  <h3>Search Resources</h3>
+  <div class="form-row align-items-center">
+    <div class="col-auto my-1">
+      <input
+        type="text"
+        class="form-control search-field"
+        name="keyword"
+        placeholder="Keyword"
+      />
+      <select name="category_id" class="custom-select mr-sm-2 search-field">
+        <option selected value="">Categories</option>
+        <option value="1">DIY</option>
+        <option value="2">Gaming</option>
+        <option value="3">Health</option>
+        <option value="4">Languages</option>
+        <option value="5">Music</option>
+        <option value="6">Recipes</option>
+        <option value="7">UX/UI</option>
+        <option value="8">Web Development</option>
+      </select>
+      <select name="rating" class="custom-select mr-sm-2 search-field">
+        <option selected value="">Rating</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+      </select>
+      <button type="submit" class="btn btn-primary search-field">Search</button>
+    </div>
+  </div>
+</form>

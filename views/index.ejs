@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Home Page</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
     <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
     <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
     <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
@@ -10,85 +14,153 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css"
       type="text/css"
     />
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
     <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.0.5/gsap.min.js"
+    ></script>
+    <script type="text/javascript" src="/scripts/app.js"></script>
+    <script type="text/javascript" src="/scripts/indexRatings.js"></script>
+
+
+    <title>NOTES - Home Page</title>
   </head>
+
   <body>
     <%-include("./partials/header") %>
-    <h1>PINsource</h1>
-    <i class="far fa-heart"></i>
-    <i class="fas fa-heart"></i>
-    <i class="far fa-star"></i>
-    <i class="fas fa-star"></i>
-    <i class="far fa-trash-alt"></i>
-    <i class="fas fa-trash-alt"></i>
-    <i class="far fa-edit"></i>
-    <i class="fas fa-edit"></i>
-    <i class="fas fa-arrow-up"></i>
-    <i class="far fa-file"></i>
-    <i class="fas fa-file"></i>
-    <form class="form-inline" action="/resources" method="GET">
-      <div class="form-group mb-2" style="margin: 0 auto">
-          <input class="form-control" type="hidden" name="userId" value=2 >
-          <button type="submit" class="btn btn-primary">My resources</button>
-        </div>
-    </form>
-
-    <!-- This is the card section -->
 
     <div class="card-columns">
-
-      <% for(let el of data) { %>
-        <div class="card" height="500px">
-          <header>
-            <img class="img-thumbnail" src="<%= el.user_profile_pic %>" width="100px" height="100px" alt="User profile picture">
-            <p> <%= el.user_username %> </p>
-            <i class="far fa-trash-alt"></i>
-            <i class="far fa-edit"></i>
-          </header>
-          <div class="card-body">
+      <% for(const el of data) { %>
+      <div class="card" height="500px">
+        <header>
+          <div>
+            <img
+              class="img-thumbnail"
+              src="<%= el.user_profile_pic %>"
+              alt="User profile picture"
+            />
+            <p class="user_username">Posted by: <%= el.user_username %></p>
+          </div>
+          <% if(el.user_id === user.id) { %>
+          <div>
+            <a href="/api/resources/edit/<%= el.id %>"
+              ><i class="far fa-edit"></i
+            ></a>
+            <form action="/api/resources/delete/<%= el.id %>" method="POST">
+              <button type="submit">
+                <i class="far fa-trash-alt"></i>
+              </button>
+            </form>
+          </div>
+          <% } %>
+        </header>
+        <div class="card-body">
           <content>
-            <a href="<%= el.url %>" target="#blank"> <h5 class="card-title"><%= el.title %></h5> </a>
-              <p class="card-text"><%= el.description %></p>
+            <a href="<%= el.url %>" target="#blank">
+              <h5 class="card-title"><%= el.title %></h5>
+            </a>
+            <p class="card-text"><%= el.description %></p>
           </content>
+          <img
+            class="img-thumbnail"
+            src="<%= el.category_thumbnail %>"
+            width="100px"
+            height="100px"
+            alt="Category image"
+          />
         </div>
-          <footer class="text-muted">
-            <div>
-              <i class="far fa-heart"></i> <%= el.number_of_likes %>
-            </div>
-            <div>
-              <i class="far fa-comment-dots"></i> CHAT
-            </div>
-            <div>
-              <i class="far fa-star"></i> <%= el.average_rating %>
-            <i class="fas fa-star"></i>
-            </div>
-          </footer>
+        <footer style="font-size: 0.8rem" class="text-muted">
+
+        <div class="likes-section">
+          <i id="<%= el.id %>"
+          <% if(user.likes.includes(el.id)) {%>
+            class="liked fas fa-heart"
+          <% } else {%>
+            class="not-liked fas fa-heart"
+          <% }%>
+          ></i>
+          <p><%= el.number_of_likes %></p>
         </div>
+          <a href="/api/resources/<%= el.id %>"
+            ><i class="far fa-comment-dots"></i
+          ></a>
+            <p style="margin-bottom: 0" id="avg_rating_of_<%= el.id %>">Avg. Rating: <%= el.average_rating %></p>
+          <form class="rating">
+            <input
+              id="rating-5_<%= el.id %>"
+              type="radio"
+              name="rating"
+              value="5"
+              <% for(rating of user.ratings) {%> <% if(rating[0] == el.id) { %> <% if(rating[1] == 5) { %> <%="checked" %> <% } %> <% } %> <% } %> />
+            <label for="rating-5_<%= el.id %>"
+              ><i class="fas fa-star"></i
+            ></label>
+            <input
+              id="rating-4_<%= el.id %>"
+              type="radio"
+              name="rating"
+              value="4"
+              <% for(rating of user.ratings) {%> <% if(rating[0] == el.id) { %> <% if(rating[1] == 4) { %> <%="checked" %> <% } %> <% } %> <% } %> />
+            <label for="rating-4_<%= el.id %>"
+              ><i class="fas fa-star"></i
+            ></label>
+            <input
+              id="rating-3_<%= el.id %>"
+              type="radio"
+              name="rating"
+              value="3"
+              <% for(rating of user.ratings) {%> <% if(rating[0] == el.id) { %> <% if(rating[1] == 3) { %> <%="checked" %> <% } %> <% } %> <% } %> />
+            <label for="rating-3_<%= el.id %>"
+              ><i class="fas fa-star"></i
+            ></label>
+            <input
+              id="rating-2_<%= el.id %>"
+              type="radio"
+              name="rating"
+              value="2"
+              <% for(rating of user.ratings) {%> <% if(rating[0] == el.id) { %> <% if(rating[1] == 2) { %> <%="checked" %> <% } %> <% } %> <% } %> />
+            <label for="rating-2_<%= el.id %>"
+              ><i class="fas fa-star"></i
+            ></label>
+            <input
+              id="rating-1_<%= el.id %>"
+              type="radio"
+              name="rating"
+              value="1"
+              <% for(rating of user.ratings) {%> <% if(rating[0] == el.id) { %> <% if(rating[1] == 1) { %> <%="checked" %> <% } %> <% } %> <% } %> />
+            <label for="rating-1_<%= el.id %>"
+              ><i class="fas fa-star"></i
+            ></label>
+          </form>
+        </footer>
+      </div>
       <% } %>
     </div>
 
-    <!-- this is the search bar -->
-    <div class="card text-center">
-      <div class="card-header"></div>
-      <div class="card-body">
-          <h4 class="card-title">Search </h4>
-          <p class="card-text">
-            <form class="form-inline" action="/api/resources" method="GET">
-              <div class="form-group mb-2" style="margin: 0 auto">
-                <label for="email">Rating:</label>
-                  <input class="form-control" type="text" name="ratings" placeholder="rating" style="width: 300px; margin: 1em">
-                <label for="email">Category:</label>
-                  <input class="form-control" type="number" name="category_id" placeholder="3" style="width: 300px; margin: 1em">
-                  <label for="keyword">Keyword:</label>
-                  <input class="form-control" type="text" name="keyword" placeholder="keyword" style="width: 300px; margin: 1em">
+    <%-include("./partials/sidebar") %>
 
-                </div>
-            </form>
-          </p>
-        </div>
-    <div class="card-footer text-muted"></div>
-  </div>
+    <footer class="footer-faded"></footer>
+
+    <script>
+      const tl = gsap.timeline({ repeat: 0 });
+      tl.staggerFromTo(
+        ".card",
+        1,
+        { opacity: 0, scale: 0.85, y: 50 },
+        { opacity: 1, scale: 1, y: 0 },
+        0.05
+      );
+    </script>
   </body>
 </html>
