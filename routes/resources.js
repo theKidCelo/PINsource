@@ -22,8 +22,11 @@ module.exports = db => {
 
   //// Getting to the creation page
   router.get("/add-resource", (req, res) => {
+    const userId = res.locals.user;
     if (req.session.userId) {
-      res.render("resource_new");
+      res.render("resource_new", { userId });
+    } else {
+      res.redirect("/login");
     }
   });
 

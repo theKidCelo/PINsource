@@ -55,13 +55,14 @@ module.exports = db => {
   router.get("/me", (req, res) => {
     const userId = req.session.userId;
     if (!userId) {
-      res.send({ message: "not logged in" });
+      res.redirect("/login");
       return;
     }
 
     dbHelperFunctions.getUserWithId(db, userId).then(user => {
       console.log(moment(user.creation_date));
-      res.render("usersProfile", { user });
+      const userId = res.locals.user;
+      res.render("usersProfile", { user, userId });
     });
   });
 
