@@ -54,9 +54,22 @@ module.exports = db => {
     // res.status(200);
   });
 
+  //-------------New User---------------------//
+  router.get("/create-account", (req, res) => {
+    if (req.session.userId) {
+      res.redirect("/");
+    }
+
+    res.render("register");
+  });
+
   router.post("/new", (req, res) => {
-    const user = req.body;
-    //function to insert user into database
+    const newUserParams = req.body;
+
+    dbHelperFunctions.addUser(db, newUserParams).then(user => {
+      req.session.userId = user.id;
+      res.redirect("/");
+    });
   });
   return router;
 };
