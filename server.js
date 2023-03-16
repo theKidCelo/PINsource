@@ -5,6 +5,12 @@ require('dotenv').config();
 const sassMiddleware = require('./lib/sass-middleware');
 const express = require('express');
 const morgan = require('morgan');
+const userQueries = require('./db/queries/users');
+
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
+
 
 const PORT = process.env.PORT || 8080;
 const app = express();
@@ -46,6 +52,85 @@ app.use('/users', usersRoutes);
 
 app.get('/', (req, res) => {
   res.render('index');
+});
+
+// Login get route
+app.get('/login', (req, res) => {
+  res.render('login');
+});
+
+//Login post route
+app.post('/login', (req, res) => {
+  const { email, password } = req.body;
+  const currentAccount = getUserByEmail(email, users);
+
+  userQueries.getUserByEmail(email)
+    .then(user => {
+
+      if (!user) {
+        return res.status(403).json({ error: 'Invalid email or password' });
+      }
+
+      if (user.password !== password) {
+        return res.status(403).json({ error: 'Invalid email or password' });
+      }
+
+      res.json({ user });
+
+      req.session.userID = currentAccount.id;
+      res.redirect("/");
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: err.message });
+    });
+
+
+});
+
+app.get('/register', (req, res) => {
+  res.render('register');
+});
+
+
+app.post('/register', (req, res) => {
+  const { email, password } = req.body;
+
+  userQueries.getUserByEmail(email)
+    .then(user => {
+      if (user) {
+        return res.status(400).json({ error: 'Email already exists' });
+      }
+
+      // Hash the password
+      bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
+        if (err) {
+          return res.status(500).json({ error: err.message });
+        }
+
+        // Save the new user
+        userQueries.addUser({
+          email,
+          password: hashedPassword
+        })
+          .then(user => {
+            res.json({ user });
+          })
+          .catch(err => {
+            res.status(500).json({ error: err.message });
+          });
+      });
+    })
+    .catch(err => {
+      res.status(500).json({ error: err.message });
+    });
+});
+
+
+// edit route
+app.get('/edit', (req, res) => {
+  res.render('edit');
 });
 
 app.listen(PORT, () => {
