@@ -50,7 +50,7 @@
                     <input class="form-control" type="text" name="ratings" placeholder="rating" style="width: 300px; margin: 1em">
                   <label for="email">Category:</label>
                     <input class="form-control" type="number" name="category_id" placeholder="3" style="width: 300px; margin: 1em">
-                    <label for="password">Keyword:</label>
+                    <label for="keyword">Keyword:</label>
                     <input class="form-control" type="text" name="keyword" placeholder="keyword" style="width: 300px; margin: 1em">
                     <button type="submit" class="btn btn-primary">Search</button>
                   </div>
@@ -60,5 +60,32 @@
           </div>
       <div class="card-footer text-muted"></div>
     </div>
+
+    <!-- new resource -->
+
+  <div class="card text-center">
+    <div class="card-header"></div>
+
+    <div class="card-body">
+        <h4 class="card-title">What's good out there? </h4>
+        <p class="card-text">
+          <form class="form-inline" action="/api/resources/new" method="POST">
+            <div class="form-group mb-2" style="margin: 0 auto">
+              <label for="title">Title:</label>
+                <input class="form-control" type="text" name="title" placeholder="title" style="width: 300px; margin: 1em">
+              <label for="email">Category:</label>
+                <input class="form-control" type="number" name="category_id" placeholder="3" style="width: 300px; margin: 1em">
+                <label for="description">Description:</label>
+                <input class="form-control" type="text" name="description" placeholder="say something about it" style="width: 300px; margin: 1em">
+                <label for="url">link:</label>
+                <input class="form-control" type="text" name="url" placeholder="url" style="width: 300px; margin: 1em">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+          </form>
+
+        </p>
+      </div>
+  <div class="card-footer text-muted"></div>
+</div>
   </body>
 </html>

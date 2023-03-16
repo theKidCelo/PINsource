@@ -28,6 +28,8 @@ module.exports = db => {
     req.session.userId = null;
     res.redirect("/");
   });
+
+  //-------------User Profile page------------------//
   router.get("/me", (req, res) => {
     const userId = req.session.userId;
     if (!userId) {
@@ -45,7 +47,7 @@ module.exports = db => {
     const { ...newParams } = req.body;
     newParams.userId = req.session.userId;
 
-    dbHelperFunctions.updateUserWithId(db, newParams).then(user => {
+    dbHelperFunctions.updateUserWithId(db, newUserParams).then(user => {
       res.json(user);
       console.log(user);
       // res.render("usersProfile", user);

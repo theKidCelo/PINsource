@@ -18,5 +18,25 @@ module.exports = db => {
       res.status(200);
     });
   });
+
+  router.post("/add-resource", (req, res) => {
+    // console.log(req.body);
+
+    const { ...newResourceParams } = req.body;
+    newResourceParams.user_id = req.session.userId;
+    dbHelperFunctions.addResource(db, newResourceParams).then(data => {
+      console.log("show me the data!", data);
+      res.redirect("index", { data });
+      res.status(200);
+    });
+  });
+
+  router.get("/delete/:id", (req, res) => {
+    dbHelperFunctions.deleteResource(db, req.params.id).then(data => {
+      console.log("show me data! ", data);
+      res.redirect("index", { data });
+      res.status(200);
+    });
+  });
   return router;
 };

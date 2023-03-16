@@ -33,40 +33,41 @@ const getUserWithId = function(db, userId) {
     });
 };
 exports.getUserWithId = getUserWithId;
+
 //edit current user profile
-const updateUserWithId = function(db, newParams) {
+const updateUserWithId = function(db, newUserParams) {
   let queryParams = [];
   let queryString = `
     UPDATE users `;
-  if (newParams.username) {
-    queryParams.push(`${newParams.username}`);
+  if (newUserParams.username) {
+    queryParams.push(`${newUserParams.username}`);
     queryString += `SET username = $${queryParams.length} `;
   }
-  if (newParams.email) {
-    queryParams.push(`${newParams.email}`);
+  if (newUserParams.email) {
+    queryParams.push(`${newUserParams.email}`);
     if (queryParams.length > 1) {
       queryString += `, email = $${queryParams.length} `;
     } else {
       queryString += `SET email = $${queryParams.length} `;
     }
   }
-  if (newParams.password) {
-    queryParams.push(`${newParams.password}`);
+  if (newUserParams.password) {
+    queryParams.push(`${newUserParams.password}`);
     if (queryParams.length > 1) {
       queryString += `, password = $${queryParams.length} `;
     } else {
       queryString += `SET password = $${queryParams.length} `;
     }
   }
-  if (newParams.profile_pic) {
-    queryParams.push(`${newParams.profile_pic}`);
+  if (newUserParams.profile_pic) {
+    queryParams.push(`${newUserParams.profile_pic}`);
     if (queryParams.length > 1) {
       queryString += `, profile_pic = $${queryParams.length} `;
     } else {
       queryString += `SET profile_pic = $${queryParams.length} `;
     }
   }
-  queryParams.push(newParams.userId);
+  queryParams.push(newUserParams.userId);
   queryString += `WHERE users.id = $${queryParams.length} RETURNING *`;
   console.log(queryString);
   console.log(queryParams);
@@ -177,3 +178,21 @@ const addResource = function(db, resources) {
     });
 };
 exports.addResource = addResource;
+
+//delete resource
+const deleteResource = function(db, resourceId) {
+  let queryParams = [resourceId];
+  let queryString = `
+    UPDATE resources
+    SET is_active = false
+    WHERE resources.id = $1
+    RETURNING * `;
+  // console.log(queryString, queryParams);
+  return db
+    .query(queryString, queryParams)
+    .then(res => res.rows[0])
+    .catch(err => {
+      console.error("query error", err.stack);
+    });
+};
+exports.deleteResource = deleteResource;
