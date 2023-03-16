@@ -116,12 +116,40 @@ exports.addUser = addUser;
 ///--------------------------resources-----------------------------------//
 //get all resources depending on the options
 const getAllResources = function(db, options, limit = 20) {
+  console.log(options);
   const queryParams = [];
   let queryString = `
-    SELECT *
+    SELECT DISTINCT *
     FROM resources
-    LIMIT $1;`;
+    LEFT OUTER JOIN resource_ratings ON ratings.resource_id = resources.id
+    LEFT OUTER JOIN liked_resources ON liked_resources.resource_id = resources.id `;
+
+  if (options.category) {
+    queryParams.push(options.category);
+    queryString += `WHERE resources.category_id = $${queryParams.length} `;
+  }
+
+  if (options.keyword) {
+    queryParams.push(`%${options.keyword.toUpperCase()}%`);
+
+    if (queryParams.length > 1) {
+      queryString += `AND upper(title) LIKE $${queryParams.length} `;
+    } else {
+      queryString += `WHERE upper(title) LIKE $${queryParams.length} `;
+    }
+  }
+
+  queryString += `
+    GROUP BY properties.id
+  `;
+  if (options.ratings) {
+    queryParams.push(`${options.ratings}`);
+    queryString += `HAVING avg(rating) >= $${queryParams.length}`;
+  }
+
   queryParams.push(limit);
+  queryString += `LIMIT $${queryParams.length}`;
+  console.log(queryString, queryParams);
 
   return db
     .query(queryString, queryParams)
@@ -134,7 +162,11 @@ exports.getAllResources = getAllResources;
 
 //add new resource
 const addResource = function(db, resources) {
-  let queryString = ``;
+  let queryString = `
+  SELECT DISTINCT *
+    FROM resources
+    LEFT OUTER JOIN ratings ON ratings.resource_id = resources.id
+    LEFT OUTER JOIN likes ON likes.resource_id = resources.id `;
   const queryParams = [];
 
   return db
