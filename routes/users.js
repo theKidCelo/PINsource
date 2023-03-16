@@ -10,16 +10,16 @@ const dbHelperFunctions = require("../db/queries/users_resources");
 const moment = require("moment");
 
 module.exports = db => {
-  router.get("/", (req, res) => {
-    db.query(`SELECT * FROM users;`)
-      .then(data => {
-        const users = data.rows;
-        res.json({ users });
-      })
-      .catch(err => {
-        res.status(500).json({ error: err.message });
-      });
-  });
+  // router.get("/", (req, res) => {
+  //   db.query(`SELECT * FROM users;`)
+  //     .then(data => {
+  //       const users = data.rows;
+  //       res.json({ users });
+  //     })
+  //     .catch(err => {
+  //       res.status(500).json({ error: err.message });
+  //     });
+  // });
   router.get("/login", (req, res) => {
     //if user already logged in
     if (req.session.userId) {
