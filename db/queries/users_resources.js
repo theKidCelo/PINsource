@@ -1,27 +1,37 @@
+const bcrypt = require("bcrypt");
+
 //---------------USERS--------------------//
 //Get a single user from the database given their email
-const getUserWithEmail = function(db, email) {
-  let queryString = ``;
-  let queryParams = [];
-  queryParams.push(email);
+const getUserWithEmail = function(db, loginInput) {
+  let queryParams = [loginInput.email];
+  let queryString = `
+    SELECT *
+    FROM users
+    WHERE users.email = $1 `;
+
   return db
     .query(queryString, queryParams)
     .then(res => {
-      return res.rows[0];
+      if (bcrypt.compareSync(loginInput.password, res.rows[0].password)) {
+        return res.rows[0];
+      } else {
+        console.log("goes here");
+        return ""; //wrong password
+      }
     })
     .catch(err => {
       console.error("query error", err.stack);
     });
 };
 exports.getUserWithEmail = getUserWithEmail;
+
 //Get a single user from the database given their id
 const getUserWithId = function(db, userId) {
+  let queryParams = [userId];
   let queryString = `
     SELECT *
     FROM users
     WHERE users.id = $1; `;
-  let queryParams = [];
-  queryParams.push(userId);
   return db
     .query(queryString, queryParams)
     .then(res => {
@@ -69,8 +79,7 @@ const updateUserWithId = function(db, newUserParams) {
   }
   queryParams.push(newUserParams.userId);
   queryString += `WHERE users.id = $${queryParams.length} RETURNING *`;
-  console.log(queryString);
-  console.log(queryParams);
+
   return db
     .query(queryString, queryParams)
     .then(res => {
@@ -88,7 +97,7 @@ const addUser = function(db, newUserParams) {
   let queryParams = [
     newUserParams.username,
     newUserParams.email,
-    newUserParams.password
+    bcrypt.hashSync(newUserParams.password, 10)
   ];
 
   let queryString = `
@@ -117,13 +126,13 @@ exports.addUser = addUser;
 ///--------------------------resources-----------------------------------//
 //get all resources depending on the options
 const getAllResources = function(db, options, limit = 20) {
-  console.log(options);
   const queryParams = [];
   let queryString = `
-    SELECT DISTINCT resources.*, COUNT(liked_resources.resource_id) as number_of_likes, ROUND(AVG(ratings.rating),2) as average_rating
+    SELECT resources.*, count(liked_resources.resource_id) as number_of_likes, round(avg(resources_ratings.rating),2) as average_rating
     FROM resources
     LEFT OUTER JOIN liked_resources ON liked_resources.resource_id = resources.id
-    LEFT OUTER JOIN resource_ratings ON resource_ratings.resource_id = resources.id `;
+    LEFT OUTER JOIN resource_ratings ON resource_ratings.resource_id = resources.id
+  `;
 
   if (options.userId) {
     queryParams.push(options.userId);
@@ -140,9 +149,18 @@ const getAllResources = function(db, options, limit = 20) {
     }
   }
 
+  if (options.content_type) {
+    queryParams.push(`${options.content_type}`);
+
+    if (queryParams.length > 1) {
+      queryString += `AND resources.content_type = $${queryParams.length} `;
+    } else {
+      queryString += `WHERE resources.content_type = $${queryParams.length} `;
+    }
+  }
+
   if (options.keyword) {
     queryParams.push(`%${options.keyword.toUpperCase()}%`);
-
     if (queryParams.length > 1) {
       queryString += `AND (upper(resources.title) LIKE $${queryParams.length} OR upper(resources.description) LIKE $${queryParams.length}) `;
     } else {
@@ -165,7 +183,6 @@ const getAllResources = function(db, options, limit = 20) {
     LIMIT $${queryParams.length};
   `;
 
-  console.log(queryString, queryParams);
   return db
     .query(queryString, queryParams)
     .then(res => res.rows)
@@ -176,13 +193,25 @@ const getAllResources = function(db, options, limit = 20) {
 exports.getAllResources = getAllResources;
 
 //add new resource
-const addResource = function(db, resources) {
+const addResource = function(db, newResourceParams) {
+  const queryParams = [
+    newResourceParams.user_id,
+    newResourceParams.category_id,
+    newResourceParams.title,
+    newResourceParams.url,
+  ];
   let queryString = `
-  SELECT DISTINCT *
-    FROM resources
-    LEFT OUTER JOIN ratings ON ratings.resource_id = resources.id
-    LEFT OUTER JOIN likes ON likes.resource_id = resources.id `;
-  const queryParams = [];
+    INSERT INTO resources
+      (user_id, category_id, title, url, description)
+    VALUES($1, $2, $3, $4, $5) `;
+
+  if (newResourceParams.description) {
+    queryParams.push(newResourceParams.description);
+  } else {
+    queryParams.push(null);
+  }
+
+  queryString += `RETURNING *`;
 
   return db
     .query(queryString, queryParams)

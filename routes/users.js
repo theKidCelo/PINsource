@@ -20,10 +20,32 @@ module.exports = db => {
         res.status(500).json({ error: err.message });
       });
   });
-  router.get("/login/:id", (req, res) => {
-    req.session.userId = req.params.id;
-    res.redirect("/");
+  router.get("/login", (req, res) => {
+    //if user already logged in
+    if (req.session.userId) {
+      res.redirect("/");
+      return;
+    }
+    res.render("login");
   });
+
+  router.post("/login", (req, res) => {
+    const loginInput = req.body;
+    dbHelperFunctions
+      .getUserWithEmail(db, loginInput)
+      .then(userInfo => {
+        if (userInfo) {
+          req.session.userId = userInfo.id;
+          res.redirect("/");
+        } else {
+          res.status(404).render("register");
+        }
+      })
+      .catch(err => {
+        res.status(500).json({ error: err.message });
+      });
+  });
+
   router.get("/logout", (req, res) => {
     req.session.userId = null;
     res.redirect("/");

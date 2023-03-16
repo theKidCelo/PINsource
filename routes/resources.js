@@ -11,8 +11,8 @@ module.exports = db => {
       res.redirect("/");
     }
     let options = req.query;
-    console.log(options);
-    dbHelperFunctions.getAllResources(db, options, 50).then(data => {
+
+    dbHelperFunctions.getAllResources(db, options, 60).then(data => {
       // console.log("show me the data!", data);
       res.render("index", { data });
       res.status(200);
@@ -20,13 +20,13 @@ module.exports = db => {
   });
 
   router.post("/add-resource", (req, res) => {
-    // console.log(req.body);
+    console.log(req.body);
 
     const { ...newResourceParams } = req.body;
     newResourceParams.user_id = req.session.userId;
     dbHelperFunctions.addResource(db, newResourceParams).then(data => {
       console.log("show me the data!", data);
-      res.redirect("index", { data });
+      res.redirect("/");
       res.status(200);
     });
   });
@@ -34,7 +34,7 @@ module.exports = db => {
   router.post("/delete/:id", (req, res) => {
     dbHelperFunctions.deleteResource(db, req.params.id).then(data => {
       console.log("show me data! ", data);
-      res.redirect("index", { data });
+      res.redirect("/");
       res.status(200);
     });
   });
