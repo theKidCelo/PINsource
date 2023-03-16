@@ -57,7 +57,8 @@ app.use('/api/resources', resourceRoutes(db));
 // Separate them into separate routes files (see above).
 
 app.get('/', (req, res) => {
-  res.render('index');
+  const data = [];
+  res.render("index", { data });
 });
 
 app.listen(PORT, () => {

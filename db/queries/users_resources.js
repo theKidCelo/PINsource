@@ -120,38 +120,52 @@ const getAllResources = function(db, options, limit = 20) {
   console.log(options);
   const queryParams = [];
   let queryString = `
-    SELECT DISTINCT *
+    SELECT DISTINCT resources.*, COUNT(liked_resources.resource_id) as number_of_likes, ROUND(AVG(ratings.rating),2) as average_rating
     FROM resources
-    LEFT OUTER JOIN resource_ratings ON ratings.resource_id = resources.id
-    LEFT OUTER JOIN liked_resources ON liked_resources.resource_id = resources.id `;
+    LEFT OUTER JOIN liked_resources ON liked_resources.resource_id = resources.id
+    LEFT OUTER JOIN resource_ratings ON resource_ratings.resource_id = resources.id `;
+
+  if (options.userId) {
+    queryParams.push(options.userId);
+    queryString += `WHERE (liked_resources.user_id = $${queryParams.length} OR resources.user_id = $${queryParams.length}) `;
+  }
 
   if (options.category_id) {
-    queryParams.push(options.category_id);
-    queryString += `WHERE resources.category_id = $${queryParams.length} `;
+    queryParams.push(`${options.category_id}`);
+
+    if (queryParams.length > 1) {
+      queryString += `AND resources.category_id = $${queryParams.length} `;
+    } else {
+      queryString += `WHERE resources.category_id = $${queryParams.length} `;
+    }
   }
 
   if (options.keyword) {
     queryParams.push(`%${options.keyword.toUpperCase()}%`);
 
     if (queryParams.length > 1) {
-      queryString += `AND upper(title) LIKE $${queryParams.length} `;
+      queryString += `AND (upper(resources.title) LIKE $${queryParams.length} OR upper(resources.description) LIKE $${queryParams.length}) `;
     } else {
-      queryString += `WHERE upper(title) LIKE $${queryParams.length} `;
+      queryString += `WHERE (upper(resources.title) LIKE $${queryParams.length} OR upper(resources.description) LIKE $${queryParams.length}) `;
     }
   }
 
   queryString += `
-    GROUP BY resources.id, resource_ratings.id, liked_resources.id
+    GROUP BY resources.id
   `;
-  if (options.ratings) {
-    queryParams.push(`${options.ratings}`);
+
+  if (options.rating) {
+    queryParams.push(`${options.rating}`);
     queryString += `HAVING avg(resource_ratings.rating) >= $${queryParams.length}`;
   }
 
   queryParams.push(limit);
-  queryString += `LIMIT $${queryParams.length}`;
-  console.log(queryString, queryParams);
+  queryString += `
+    ORDER BY number_of_likes DESC, resources.id
+    LIMIT $${queryParams.length};
+  `;
 
+  console.log(queryString, queryParams);
   return db
     .query(queryString, queryParams)
     .then(res => res.rows)

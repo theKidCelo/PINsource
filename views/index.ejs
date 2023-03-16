@@ -28,14 +28,38 @@
     <i class="fas fa-arrow-up"></i>
     <i class="far fa-file"></i>
     <i class="fas fa-file"></i>
-    <% for(let el of data) { %>
-      <tr>
-        <td><%= el.owner_id%></td>
-        <td><%= el.title%></td>
-        <td><%= el.description%></td>
-        <td><%= el.url%></td>
-      </tr>
-      <% } %>
+
+    <form class="form-inline" action="/api/resources" method="GET">
+      <div class="form-group mb-2" style="margin: 0 auto">
+          <input class="form-control" type="hidden" name="userId" value=2 >
+          <button type="submit" class="btn btn-primary">My resources</button>
+        </div>
+    </form>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">User</th>
+          <th scope="col">title</th>
+          <th scope="col">description</th>
+          <th scope="col">url</th>
+          <th scope="col">#likes</th>
+          <th scope="col">rating</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for(let el of data) { %>
+          <tr>
+            <td><%= el.user_id%></td>
+            <td><%= el.title%></td>
+            <td><%= el.description%></td>
+            <td><%= el.url%></td>
+            <td><%= el.number_of_likes%></td>
+            <td><%= el.average_rating%></td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
 
       <!-- search bar -->
       <div class="card text-center">

@@ -10,10 +10,10 @@ module.exports = db => {
     if (!userId) {
       res.redirect("/");
     }
-    const options = req.query;
+    let options = req.query;
     console.log(options);
-    dbHelperFunctions.getAllResources(db, options).then(data => {
-      console.log("show me the data!", data);
+    dbHelperFunctions.getAllResources(db, options, 50).then(data => {
+      // console.log("show me the data!", data);
       res.render("index", { data });
       res.status(200);
     });
