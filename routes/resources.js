@@ -13,8 +13,9 @@ module.exports = db => {
     let options = req.query;
 
     dbHelperFunctions.getAllResources(db, options, 60).then(data => {
-      // console.log("show me the data!", data);
-      res.render("index", { data });
+      const userId = res.locals.user;
+      res.render("index", { data, userId });
+      // res.render("index", { data });
       res.status(200);
     });
   });
@@ -37,7 +38,9 @@ module.exports = db => {
     options.userId = userId;
 
     dbHelperFunctions.getAllResources(db, options, 60).then(data => {
-      res.render("index", { data }); //may change to individual page
+      const userId = res.locals.user;
+      res.render("index", { data, userId });
+      // res.render("index", { data });
       res.status(200);
     });
   });
