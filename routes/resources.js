@@ -26,6 +26,23 @@ module.exports = db => {
     }
   });
 
+  router.get("/my-resources", (req, res) => {
+    const userId = req.session.userId;
+
+    if (!userId) {
+      res.redirect("/");
+    }
+
+    let options = {};
+    options.userId = userId;
+
+    dbHelperFunctions.getAllResources(db, options, 60).then(data => {
+      res.render("index", { data }); //may change to individual page
+      res.status(200);
+    });
+  });
+
+  //add new resource
   router.post("/add-resource", (req, res) => {
     console.log(req.body);
 
