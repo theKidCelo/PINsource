@@ -50,13 +50,10 @@
               src="<%= el.user_profile_pic %>"
               alt="User profile picture"
             />
-            <p class="user_username">Posted by: <%= el.user_username %></p>
+            <p class="user_name">Posted by: <%= el.user_name %></p>
           </div>
           <% if(el.user_id === user.id) { %>
           <div>
-            <a href="/api/resources/edit/<%= el.id %>"
-              ><i class="far fa-edit"></i
-            ></a>
             <form action="/api/resources/delete/<%= el.id %>" method="POST">
               <button type="submit">
                 <i class="far fa-trash-alt"></i>
@@ -72,19 +69,12 @@
             </a>
             <p class="card-text"><%= el.description %></p>
           </content>
-          <img
-            class="img-thumbnail"
-            src="<%= el.category_thumbnail %>"
-            width="100px"
-            height="100px"
-            alt="Category image"
-          />
         </div>
         <footer style="font-size: 0.8rem" class="text-muted">
 
         <div class="likes-section">
           <i id="<%= el.id %>"
-          <% if(user.likes.includes(el.id)) {%>
+          <% if(user.liked_resources.includes(el.id)) {%>
             class="liked fas fa-heart"
           <% } else {%>
             class="not-liked fas fa-heart"

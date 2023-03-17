@@ -2,6 +2,7 @@ const dbHelperFunctions = require("../db/queries/users_resources");
 const express = require("express");
 const router = express.Router();
 const auth = require("../lib/auth-middleware");
+const moment = require("moment");
 
 module.exports = db => {
   router.get("/", auth, (req, res) => {
@@ -15,7 +16,6 @@ module.exports = db => {
     dbHelperFunctions.getAllResources(db, options, 60).then(data => {
       const user = res.locals.user;
       res.render("index", { data, user });
-      // res.render("index", { data });
       res.status(200);
     });
   });
@@ -38,11 +38,7 @@ module.exports = db => {
           likesArr.push(el);
         }
       }
-
-      console.log(likesArr);
-
       res.render("my-resources", { data, user, likesArr });
-      // res.render("index", { data });
       res.status(200);
     });
   });
@@ -61,13 +57,11 @@ module.exports = db => {
   //// Submit a new resource
   router.post("/add-resource", auth, (req, res) => {
     console.log(req.body);
-    // if (req.session.userId) then allow else send 403
 
     const { ...newResourceParams } = req.body;
     newResourceParams.user_id = req.session.userId;
+
     dbHelperFunctions.addResource(db, newResourceParams).then(data => {
-      console.log("im the data ", data);
-      // res.redirect("index", { data });         ///this redirect is not working
       res.redirect("/api/resources");
       res.status(200);
     });
@@ -75,11 +69,7 @@ module.exports = db => {
 
   //// 'Delete' an existing resource
   router.post("/delete/:id", auth, (req, res) => {
-    //this alongside some other endpoints needs to be changed using method override to satisfy the RESTful convention
-
-    // if req.session.userId !== user_id then send back 403
     dbHelperFunctions.deleteResource(db, req.params.id).then(data => {
-      console.log("im the data ", data);
       res.redirect("/");
       res.status(200);
     });
@@ -132,13 +122,7 @@ module.exports = db => {
 
     dbHelperFunctions.getResourceFromId(db, resource_id).then(data => {
       const user = res.locals.user;
-      console.log(
-        "here: ",
-        data.created_at = moment(data.created_at).format(
-          "dddd, MMMM Do YYYY, h:mm:ss a"
-        )
-      );
-      res.render("expandedResource", { data, user });
+      res.render("resource_page", { data, user });
     });
   });
 
@@ -146,7 +130,14 @@ module.exports = db => {
   router.get("/:id/comments", auth, (req, res) => {
     const resource_id = req.params.id;
 
-    dbHelperFunctions.fetchComments(db, resource_id).then(console.log);
+    dbHelperFunctions.fetchComments(db, resource_id).then(comments => {
+      for (let comment of comments) {
+        comment.comment_date = moment(comment.comment_date).format(
+          "dddd, MMMM Do YYYY, h:mm:ss a"
+        );
+      }
+      res.send(comments);
+    });
   });
 
   // post a new comment to resource
@@ -160,20 +151,20 @@ module.exports = db => {
       });
     });
   });
+
   //ratings
   router.post("/:id/ratings", auth, (req, res) => {
     const { ...ratingParams } = req.body;
     ratingParams.resource_id = req.params.id;
     ratingParams.user_id = res.locals.user.id;
-    console.log(res.locals.user.ratings);
 
     let action = "insert";
-    for (el of res.locals.user.ratings) {
+    for (let el of res.locals.user.ratings) {
       if (el[0] == ratingParams.resource_id) {
         action = "update";
       }
     }
-    console.log(action);
+
     if (action === "update") {
       dbHelperFunctions
         .updateRatings(db, ratingParams)
