@@ -31,7 +31,17 @@ module.exports = db => {
 
     dbHelperFunctions.getAllResources(db, options, 60).then(data => {
       const user = res.locals.user;
-      res.render("my-resources", { data, user });
+      const likesArr = [];
+
+      for (const el of data) {
+        if (el.owner_id !== user.id) {
+          likesArr.push(el);
+        }
+      }
+
+      console.log(likesArr);
+
+      res.render("my-resources", { data, user, likesArr });
       // res.render("index", { data });
       res.status(200);
     });
