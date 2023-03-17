@@ -68,14 +68,16 @@ module.exports = db => {
   });
 
   router.post("/me", (req, res) => {
-    const { ...newUserParams } = req.body;
-    newUserParams.userId = req.session.userId;
+    if (!req.body.username && !req.body.email && !req.body.password) {
+      res.redirect("me");
+    } else {
+      const { ...newUserParams } = req.body;
+      newUserParams.userId = req.session.userId;
 
-    console.log("this: ", newUserParams);
-
-    dbHelperFunctions.updateUserWithId(db, newUserParams).then(user => {
-      res.render("usersProfile", user);
-    });
+      dbHelperFunctions.updateUserWithId(db, newUserParams).then(user => {
+        res.render("usersProfile", {user});
+      });
+    }
   });
 
   //-------------New User---------------------//
