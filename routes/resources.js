@@ -80,8 +80,11 @@ module.exports = db => {
     likeParams.resource_id = req.params.id;
     likeParams.user_id = res.locals.user.id;
 
-    dbHelperFunctions.addLike(db, likeParams).then(data => {
-      console.log(data);
+    dbHelperFunctions.addLike(db, likeParams).then(resource_id => {
+      dbHelperFunctions.countLikes(db, resource_id).then(data => {
+        const number_of_likes = data[0].count;
+        res.json({ number_of_likes });
+      });
     });
   });
   return router;

@@ -17,4 +17,14 @@ $(() => {
   $("#edit-password").click(function() {
     $(".user-password-input").toggle(400);
   });
+
+  $(".fa-heart").click(function() {
+    $.ajax({
+      method: "POST",
+      url: `/api/resources/${this.id}/likes`
+    }).done(data => {
+      $(`#${this.id}`).empty();
+      $(`#${this.id}`).text(data.number_of_likes);
+    });
+  });
 });
