@@ -11,6 +11,12 @@ const dbParams = {
 
 const db = new Pool(dbParams);
 
+db.query(" CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, email VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL, creation_date DATE NOT NULL DEFAULT CURRENT_DATE)",(err,res)=>{
+  console.log(err,res)
+  // db.end()
+})
+
 db.connect();
 
 module.exports = db;
+ 
