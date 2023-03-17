@@ -101,15 +101,19 @@ const addUser = function(db, newUserParams) {
   ];
 
   let queryString = `
-    INSERT INTO users
-    (username, email, password, profile_pic)
-    VALUES ($1, $2, $3, $4)
-    RETURNING *`;
+    INSERT INTO users`;
 
   if (newUserParams.profile_pic) {
     queryParams.push(newUserParams.profile_pic);
+    queryString += `
+    (username, email, password, profile_pic)
+    VALUES ($1, $2, $3, $4)
+    RETURNING * `;
   } else {
-    queryParams.push(null);
+    queryString += `
+    (username, email, password)
+    VALUES ($1, $2, $3)
+    RETURNING * `;
   }
 
   return db

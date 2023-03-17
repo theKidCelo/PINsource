@@ -88,5 +88,21 @@ module.exports = db => {
       });
     });
   });
+
+  // get the individual resource page
+  router.get("/:id", auth, (req, res) => {
+    const resource_id = req.params.id;
+
+    dbHelperFunctions.getResourceFromId(db, resource_id).then(data => {
+      const user = res.locals.user;
+      console.log(
+        "here: ",
+        data.created_at = moment(data.created_at).format(
+          "dddd, MMMM Do YYYY, h:mm:ss a"
+        )
+      );
+      res.render("expandedResource", { data, user });
+    });
+  });
   return router;
 };

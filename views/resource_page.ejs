@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
+    <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
+    <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css"
+      type="text/css"
+    />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+    <script type="text/javascript" src="/scripts/app.js"></script>
+
+    <title>PINsource - Resource Page</title>
+  </head>
+  <body>
+    <%-include("./partials/header") %>
+
+    <div class="post-sidebar">
+      <div class="card">
+        <header>
+          <div>
+            <img
+              class="img-thumbnail"
+              src="<%= data[0].owner_profile_pic %>"
+              alt="User profile picture"
+            />
+            <p><%= data[0].owner_name %></p>
+          </div>
+          <div>
+            <% if(data[0].owner_id === user.id) { %>
+            <div>
+              <a href="/api/resources/edit/<%= data[0].id %>"
+                ><i class="far fa-edit"></i
+              ></a>
+              <form
+                action="/api/resources/delete/<%= data[0].id %>"
+                method="POST"
+              >
+                <button type="submit">
+                  <i class="far fa-trash-alt"></i>
+                </button>
+              </form>
+            </div>
+            <% } %>
+          </div>
+        </header>
+        <form
+          class="card-body"
+          action="/api/resources/edit/<%= data[0].id %>"
+          method="POST"
+        >
+          <content>
+            <div>
+              <a href="<%= data[0].url %>" target="#blank">
+                <h5 class="card-title"><%= data[0].title %></h5>
+              </a>
+            </div>
+
+            <div>
+              <p class="card-text"><%= data[0].description %></p>
+            </div>
+          </content>
+          <div class="picture-area">
+            <img
+              class="img-thumbnail"
+              src="<%= data[0].category_thumbnail %>"
+              width="200px"
+              height="200px"
+              alt="Category image"
+            />
+          </div>
+        </form>
+        <footer class="text-muted">
+          <div><i class="far fa-heart"></i> <%= data[0].number_of_likes %></div>
+
+          <div>
+            <i class="far fa-star"></i> <%= data[0].average_rating %>
+            <i class="fas fa-star"></i>
+          </div>
+          <%= data[0].created_at %>
+        </footer>
+      </div>
+    </div>
+
+    <div class="comments-container">
+      <form id="postComment">
+        <textarea
+          id="commentText"
+          name="text"
+          placeholder="What's on your mind?"
+        ></textarea>
+        <div>
+          <input class="button" type="submit" value="Comment" />
+          <span class="counter">140</span>
+        </div>
+      </form>
+
+      <article class="comment">
+        <header>
+          <div class="userIcon">
+            <img
+              class="user-pic"
+              src="https://66.media.tumblr.com/avatar_97d1f91079df_128.pnj"
+            />
+            <span>Alice</span>
+          </div>
+        </header>
+        <p class="commentContent">THIS RESOURCE IS DOPE</p>
+        <footer>
+          <span>5 years ago</span>
+          </span>
+        </footer>
+      </article>
+    </div>
+  </body>
+</html>
