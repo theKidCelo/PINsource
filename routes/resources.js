@@ -159,10 +159,11 @@ module.exports = db => {
 
     let action = "insert";
     for (el of res.locals.user.ratings) {
-      if (el[0] === ratingParams.resource_id) {
+      if (el[0] == ratingParams.resource_id) {
         action = "update";
       }
     }
+    console.log(action);
     if (action === "update") {
       dbHelperFunctions
         .updateRatings(db, ratingParams)
