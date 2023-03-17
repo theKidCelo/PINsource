@@ -8,11 +8,13 @@ $(() => {
   //     $("<div>").text(user.name).appendTo($("body"));
   //   }
   // });
-  $(".fa-heart").click(function() {
-    console.log(this.id);
-    $.ajax({
-      method: "POST",
-      url: `/api/resources/${this.id}/likes`
-    }).done();
+  $("#edit-name").click(function() {
+    $(".user-name-input").toggle(400);
+  });
+  $("#edit-email").click(function() {
+    $(".user-email-input").toggle(400);
+  });
+  $("#edit-password").click(function() {
+    $(".user-password-input").toggle(400);
   });
 });
