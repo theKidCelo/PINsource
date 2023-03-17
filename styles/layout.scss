@@ -216,6 +216,23 @@ body {
       display: flex;
       flex-direction: column;
       justify-content: space-around;
+
+      .description-div {
+        display: flex;
+      }
+
+      #title-input {
+        width: 50%;
+      }
+
+      #description-input {
+        width: 90%;
+        height: 6rem;
+        margin-left: 0.25rem;
+      }
+
+      #url-input {
+        width: 90%;
     }
     .picture-area {
       height: 100%;
