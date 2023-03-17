@@ -117,7 +117,12 @@ module.exports = db => {
     const { ...newCommentParams } = req.body;
     newCommentParams.resource_Id = req.params.id;
     newCommentParams.user_Id = res.locals.user.id;
-    dbHelperFunctions.addNewComment(db, newCommentParams).then(console.log);
+    dbHelperFunctions
+      .addNewComment(db, newCommentParams)
+      .then(data => {
+        return data.resource_id;
+      })
+      .then(dbHelperFunctions.fetchComments(db, resource_id).then(console.log));
   });
   return router;
 };
