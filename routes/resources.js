@@ -73,5 +73,11 @@ module.exports = db => {
       res.status(200);
     });
   });
+
+  //liking resources
+  router.post("/:id/likes", auth, (req, res) => {
+    const resource_id = req.params.id;
+    const user_id = res.locals.user.id;
+  });
   return router;
 };
