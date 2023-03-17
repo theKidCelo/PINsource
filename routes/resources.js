@@ -115,14 +115,13 @@ module.exports = db => {
   // post a new comment to resource
   router.post("/:id/comments", auth, (req, res) => {
     const { ...newCommentParams } = req.body;
-    newCommentParams.resource_Id = req.params.id;
-    newCommentParams.user_Id = res.locals.user.id;
-    dbHelperFunctions
-      .addNewComment(db, newCommentParams)
-      .then(data => {
-        return data.resource_id;
-      })
-      .then(dbHelperFunctions.fetchComments(db, resource_id).then(console.log));
+    newCommentParams.user_id = res.locals.user.id;
+
+    dbHelperFunctions.addNewComment(db, newCommentParams).then(resource_id => {
+      dbHelperFunctions.fetchComments(db, resource_id).then(comments => {
+        res.send(comments);
+      });
+    });
   });
   return router;
 };
