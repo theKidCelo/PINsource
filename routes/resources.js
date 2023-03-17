@@ -81,14 +81,41 @@ module.exports = db => {
     likeParams.resource_id = req.params.id;
     likeParams.user_id = res.locals.user.id;
 
-    dbHelperFunctions.addLike(db, likeParams).then(resource_id => {
-      dbHelperFunctions.countLikes(db, resource_id).then(data => {
+    dbHelperFunctions
+      .addLike(db, likeParams)
+      .then(resource_id => {
+        return dbHelperFunctions.countLikes(db, resource_id);
+      })
+      .then(data => {
         const number_of_likes = data[0].count;
         res.json({ number_of_likes });
       });
-    });
   });
 
+  router.post("/:id/likes/delete", auth, (req, res) => {
+    const likeParams = {};
+    likeParams.resource_id = Number(req.params.id);
+    likeParams.user_id = res.locals.user.id;
+
+    dbHelperFunctions
+      .getLikeId(db, likeParams.user_id, likeParams.resource_id)
+      .then(like_id => {
+        return dbHelperFunctions.deleteLike(db, like_id);
+      })
+      .then(data => {
+        return dbHelperFunctions.countLikes(db, data.resource_id);
+      })
+      .then(data => {
+        let number_of_likes;
+        if (data.length === 0) {
+          number_of_likes = 0;
+        } else {
+          number_of_likes = data[0].count;
+        }
+
+        res.json({ number_of_likes });
+      });
+  });
   // get the individual resource page
   router.get("/:id", auth, (req, res) => {
     const resource_id = req.params.id;

@@ -316,6 +316,41 @@ const countLikes = function(db, resource_id) {
 };
 exports.countLikes = countLikes;
 
+const getLikeId = function(db, user_id, resource_id) {
+  const queryParams = [user_id, resource_id];
+  const queryString = `
+    SELECT id
+    FROM liked_resources
+    WHERE user_id = $1
+      AND resource_id = $2;
+  `;
+
+  return db
+    .query(queryString, queryParams)
+    .then(res => res.rows[0].id)
+    .catch(err => {
+      console.error("query error", err.stack);
+    });
+};
+exports.getLikeId = getLikeId;
+
+const deleteLike = function(db, like_id) {
+  const queryParams = [like_id];
+  console.log(like_id);
+  const queryString = `
+    DELETE FROM liked_resources
+    WHERE liked_resources.id = $1
+    RETURNING *
+  `;
+  return db
+    .query(queryString, queryParams)
+    .then(res => res.rows[0])
+    .catch(err => {
+      console.error("query error", err.stack);
+    });
+};
+exports.deleteLike = deleteLike;
+
 //fetch and add comments
 
 const fetchComments = (db, resource_id) => {
