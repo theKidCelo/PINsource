@@ -137,7 +137,7 @@ const getAllResources = function(db, options, limit = 20) {
     LEFT OUTER JOIN liked_resources ON liked_resources.resource_id = resources.id
     LEFT OUTER JOIN users ON resources.user_id = users.id
     LEFT OUTER JOIN categories ON resources.category_id = categories.id
-    LEFT OUTER JOIN (SELECT resource_id, round(avg(resource_ratings.rating), 2) as average_rating
+    LEFT OUTER JOIN (SELECT resource_id, round(avg(resource_ratings.rating), 1) as average_rating
               FROM resource_ratings
               GROUP BY resource_id
               ORDER BY resource_id) as average_ratings ON resources.id = average_ratings.resource_id
@@ -406,3 +406,76 @@ const addNewComment = (db, newCommentParams) => {
     });
 };
 exports.addNewComment = addNewComment;
+
+//----------------------RATINGS-------------------------------//
+
+const usersRatedResources = (db, user_id) => {
+  const queryParams = [user_id];
+  const queryString = `
+    SELECT resource_id, rating
+    FROM resource_ratings
+    WHERE user_id = $1`;
+  return db
+    .query(queryString, queryParams)
+    .then(res => res.rows)
+    .catch(err => {
+      console.error("query error", err.stack);
+    });
+};
+exports.usersRatedResources = usersRatedResources;
+
+const updateRatings = (db, ratingParams) => {
+  const queryParams = [
+    ratingParams.rating,
+    ratingParams.user_id,
+    ratingParams.resource_id
+  ];
+  const queryString = `
+    UPDATE resource_ratings
+    SET rating = $1
+    WHERE user_id = $2 AND resource_id = $3`;
+
+  return db
+    .query(queryString, queryParams)
+    .then(res => res.rows)
+    .catch(err => {
+      console.error("query error", err.stack);
+    });
+};
+exports.updateRatings = updateRatings;
+
+const addRating = (db, ratingParams) => {
+  const queryParams = [
+    ratingParams.user_id,
+    ratingParams.resource_id,
+    ratingParams.rating
+  ];
+  const queryString = `
+    INSERT INTO resource_ratings (user_id, resource_id, rating)
+    VALUES ($1, $2, $3)`;
+
+  return db
+    .query(queryString, queryParams)
+    .then(res => res.rows)
+    .catch(err => {
+      console.error("query error", err.stack);
+    });
+};
+exports.addRating = addRating;
+
+const fetchAverageRating = (db, resource_id) => {
+  const queryParams = [resource_id];
+  const queryString = `
+    SELECT round(AVG(rating),1)
+    FROM resource_ratings
+    WHERE resource_id = $1
+    GROUP BY resource_id`;
+
+  return db
+    .query(queryString, queryParams)
+    .then(res => res.rows[0])
+    .catch(err => {
+      console.error("query error", err.stack);
+    });
+};
+exports.fetchAverageRating = fetchAverageRating;

@@ -150,5 +150,40 @@ module.exports = db => {
       });
     });
   });
+  //ratings
+  router.post("/:id/ratings", auth, (req, res) => {
+    const { ...ratingParams } = req.body;
+    ratingParams.resource_id = req.params.id;
+    ratingParams.user_id = res.locals.user.id;
+    console.log(res.locals.user.ratings);
+
+    let action = "insert";
+    for (el of res.locals.user.ratings) {
+      if (el[0] === ratingParams.resource_id) {
+        action = "update";
+      }
+    }
+    if (action === "update") {
+      dbHelperFunctions
+        .updateRatings(db, ratingParams)
+        .then(() => {
+          return dbHelperFunctions.fetchAverageRating(db, ratingParams.resource_id);
+        })
+        .then(averageRating => {
+          res.json(averageRating);
+        });
+    }
+
+    if (action === "insert") {
+      dbHelperFunctions
+        .addRating(db, ratingParams)
+        .then(() => {
+          return dbHelperFunctions.fetchAverageRating(db, ratingParams.resource_id);
+        })
+        .then(averageRating => {
+          res.json(averageRating);
+        });
+    }
+  });
   return router;
 };
