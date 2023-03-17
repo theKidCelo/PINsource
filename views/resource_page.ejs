@@ -89,7 +89,13 @@
           </div>
         </form>
         <footer class="text-muted">
-          <div><i class="far fa-heart"></i> <%= data[0].number_of_likes %></div>
+          <div class="likes-section">
+            <i id="<%= data[0].id %>" <% if(user.likes.includes(data[0].id)) {%>
+              class="liked fas fa-heart" <% } else { %> class="not-liked fas
+              fa-heart" <% } %>></i
+            >
+            <p><%= data[0].number_of_likes %></p>
+          </div>
           <div>Avg. Rating: <%= data[0].average_rating %></div>
           <div class="rating">
             <input id="rating-1" type="radio" name="rating" value="1" /><label

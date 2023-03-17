@@ -19,12 +19,30 @@ $(() => {
   });
 
   $(".fa-heart").click(function() {
-    $.ajax({
-      method: "POST",
-      url: `/api/resources/${this.id}/likes`
-    }).done(data => {
-      $(`#${this.id}`).empty();
-      $(`#${this.id}`).text(data.number_of_likes);
-    });
+    if ($(this).hasClass("not-liked")) {
+      $.ajax({
+        method: "POST",
+        url: `/api/resources/${this.id}/likes`
+      }).done(data => {
+        $(`#${this.id}`)
+          .siblings()
+          .text(data.number_of_likes);
+        $(`#${this.id}`)
+          .removeClass("not-liked")
+          .addClass("liked");
+      });
+    } else if ($(this).hasClass("liked")) {
+      $.ajax({
+        method: "POST",
+        url: `/api/resources/${this.id}/likes/delete`
+      }).done(data => {
+        $(`#${this.id}`)
+          .siblings()
+          .text(data.number_of_likes);
+        $(`#${this.id}`)
+          .removeClass("liked")
+          .addClass("not-liked");
+      });
+    }
   });
 });
