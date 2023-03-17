@@ -1,14 +1,21 @@
 $(() => {
+  const resource_id = window.location.href.split("/").reverse()[0];
+
+  const escape = function(str) {
+    let div = document.createElement("div");
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+  };
+
   $("#postComment").submit(function(event) {
     event.preventDefault();
 
-    const comment = $("#commentText").val();
-    const resource_id = window.location.href.split("/").reverse()[0];
+    const message = $("#commentText").val();
 
     $.ajax({
       method: "POST",
       url: `/api/resources/${resource_id}/comments`,
-      data: { comment, resource_id }
+      data: { message, resource_id }
     }).done(commentsArr => {
       $("#commentText").val("");
       renderComments(commentsArr);
@@ -17,8 +24,6 @@ $(() => {
 
   ///helper functions
   const loadComments = function() {
-    const resource_id = window.location.href.split("/").reverse()[0];
-
     $.ajax(`/api/resources/${resource_id}/comments`).then(res => {
       renderComments(res);
     });
@@ -37,9 +42,9 @@ $(() => {
           <span>${commentObj.user_name}</span>
         </div>
       </header>
-      <p class="commentContent">${commentObj.comment}</p>
+      <p class="commentContent">${escape(commentObj.message)}</p>
       <footer>
-        <span>${commentObj.created_at}</span>
+        <span>${commentObj.created_at_pst}</span>
         </span>
       </footer>
     </article>`;
@@ -51,4 +56,21 @@ $(() => {
       $("#all-comments").append(createCommentElement(comment));
     }
   };
+
+  $(".fa-star").click(function() {
+    const rating = $(this)
+      .parent()
+      .attr("for")
+      .split("-")[1][0];
+
+    $.ajax({
+      method: "POST",
+      url: `/api/resources/${resource_id}/ratings`,
+      data: { rating }
+    }).done(averageRating => {
+      $(`#avg_rating_of_${resource_id}`).text(
+        `Avg. Rating: ${averageRating.round}`
+      );
+    });
+  });
 });
