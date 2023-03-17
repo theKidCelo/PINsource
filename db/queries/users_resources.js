@@ -128,12 +128,16 @@ exports.addUser = addUser;
 const getAllResources = function(db, options, limit = 20) {
   const queryParams = [];
   let queryString = `
-    SELECT resources.*, users.username AS user, users.profile_pic, count(liked_resources.resource_id) as number_of_likes, round(avg(resources_ratings.rating),2) as average_rating
+    SELECT resources.*, users.username as username, users.profile_pic as user_profile_pic, count(liked_resources.resource_id) as number_of_likes, average_rating
     FROM resources
     LEFT OUTER JOIN liked_resources ON liked_resources.resource_id = resources.id
-    LEFT OUTER JOIN resource_ratings ON resource_ratings.resource_id = resources.id
     LEFT OUTER JOIN users ON resources.user_id = users.id
-  `;
+    LEFT OUTER JOIN categories ON resources.category_id = categories.id
+    LEFT OUTER JOIN (SELECT resource_id, round(avg(resource_ratings.rating), 2) as average_rating
+              FROM resource_ratings
+              GROUP BY resource_id
+              ORDER BY resource_id) as average_ratings ON resources.id = average_ratings.resource_id
+`;
 
   if (options.userId) {
     queryParams.push(options.userId);
@@ -170,7 +174,7 @@ const getAllResources = function(db, options, limit = 20) {
   }
 
   queryString += `
-    GROUP BY resources.id, users.username, users.profile_pic
+    GROUP BY resources.id, average_ratings.average_rating, users.username, users.profile_pic
   `;
 
   if (options.rating) {
@@ -192,6 +196,13 @@ const getAllResources = function(db, options, limit = 20) {
     });
 };
 exports.getAllResources = getAllResources;
+
+const getAverageRatings = function(db) {
+  const queryParams = [];
+  let queryString = `
+  `;
+};
+exports.getAverageRatings = getAverageRatings;
 
 ////get resource from resource_id
 const getResourceFromId = function(db, resource_id) {
