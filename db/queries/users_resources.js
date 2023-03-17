@@ -315,3 +315,41 @@ const countLikes = function(db, resource_id) {
     });
 };
 exports.countLikes = countLikes;
+
+//fetch and add comments
+
+const fetchComments = (db, resource_id) => {
+  let queryParams = [resource_id];
+  let queryString = `
+    SELECT comments.*, users.username as username, users.profile_pic as user_profile_pic
+    FROM comments
+    JOIN users on user_id = users.id
+    WHERE resource_id = $1`;
+
+  return db
+    .query(queryString, queryParams)
+    .then(res => res.rows)
+    .catch(err => {
+      console.error("query error", err.stack);
+    });
+};
+exports.fetchComments = fetchComments;
+
+const addNewComment = (db, newCommentParams) => {
+  let queryParams = [
+    newCommentParams.user_Id,
+    newCommentParams.resource_Id,
+    newCommentParams.message
+  ];
+  let queryString = `
+    INSERT INTO comments (user_id, resource_id, comment)
+    VALUES ($1, $2, $3)`;
+
+  return db
+    .query(queryString, queryParams)
+    .then(res => res.rows)
+    .catch(err => {
+      console.error("query error", err.stack);
+    });
+};
+exports.addNewComment = addNewComment;

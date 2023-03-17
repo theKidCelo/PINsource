@@ -104,5 +104,20 @@ module.exports = db => {
       res.render("expandedResource", { data, user });
     });
   });
+
+  // get the comments for resource
+  router.get("/:id/comments", auth, (req, res) => {
+    const resource_id = req.params.id;
+
+    dbHelperFunctions.fetchComments(db, resource_id).then(console.log);
+  });
+
+  // post a new comment to resource
+  router.post("/:id/comments", auth, (req, res) => {
+    const { ...newCommentParams } = req.body;
+    newCommentParams.resource_Id = req.params.id;
+    newCommentParams.user_Id = res.locals.user.id;
+    dbHelperFunctions.addNewComment(db, newCommentParams).then(console.log);
+  });
   return router;
 };
