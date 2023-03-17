@@ -90,12 +90,34 @@
         </form>
         <footer class="text-muted">
           <div><i class="far fa-heart"></i> <%= data[0].number_of_likes %></div>
-
+          <div>Avg. Rating: <%= data[0].average_rating %></div>
+          <div class="rating">
+            <input id="rating-1" type="radio" name="rating" value="1" /><label
+              for="rating-1"
+              ><i class="fas fa-star"></i
+            ></label>
+            <input id="rating-2" type="radio" name="rating" value="2" /><label
+              for="rating-2"
+              ><i class="fas fa-star"></i
+            ></label>
+            <input id="rating-3" type="radio" name="rating" value="3" /><label
+              for="rating-3"
+              ><i class="fas fa-star"></i
+            ></label>
+            <input id="rating-4" type="radio" name="rating" value="4" /><label
+              for="rating-4"
+              ><i class="fas fa-star"></i
+            ></label>
+            <input id="rating-5" type="radio" name="rating" value="5" /><label
+              for="rating-5"
+              ><i class="fas fa-star"></i
+            ></label>
+          </div>
           <div>
             <i class="far fa-star"></i> <%= data[0].average_rating %>
             <i class="fas fa-star"></i>
           </div>
-          <%= data[0].created_at %>
+          <%= data[0].creation_date %>
         </footer>
       </div>
     </div>
