@@ -154,16 +154,6 @@ const getAllResources = function(db, options, limit = 20) {
     }
   }
 
-  if (options.content_type) {
-    queryParams.push(`${options.content_type}`);
-
-    if (queryParams.length > 1) {
-      queryString += `AND resources.content_type = $${queryParams.length} `;
-    } else {
-      queryString += `WHERE resources.content_type = $${queryParams.length} `;
-    }
-  }
-
   if (options.keyword) {
     queryParams.push(`%${options.keyword.toUpperCase()}%`);
     if (queryParams.length > 1) {
@@ -179,7 +169,7 @@ const getAllResources = function(db, options, limit = 20) {
 
   if (options.rating) {
     queryParams.push(`${options.rating}`);
-    queryString += `HAVING avg(resource_ratings.rating) >= $${queryParams.length}`;
+    queryString += `HAVING average_rating >= $${queryParams.length}`;
   }
 
   queryParams.push(limit);
@@ -208,14 +198,17 @@ exports.getAverageRatings = getAverageRatings;
 const getResourceFromId = function(db, resource_id) {
   const queryParams = [resource_id];
   let queryString = `
-    SELECT resources.*, users.username as username, users.profile_pic as user_profile_pic, count(liked_resources.resource_id) as number_of_likes, round(avg(resource_ratings.rating),2) as average_rating
+    SELECT resources.*, users.username as username, users.profile_pic as user_profile_pic, count(liked_resources.resource_id) as number_of_likes, average_rating
     FROM resources
     LEFT OUTER JOIN liked_resources ON liked_resources.resource_id = resources.id
     LEFT OUTER JOIN ratings ON resource_ratings.resource_id = resources.id
     LEFT OUTER JOIN users ON resources.user_id = users.id
-    LEFT OUTER JOIN categories ON resources.category_id = categories.id
+    LEFT OUTER JOIN (SELECT resource_id, round(avg(resource_ratings.rating), 2) as average_rating
+                FROM resource_ratings
+                GROUP BY resource_id
+                ORDER BY resource_id) as average_ratings ON resources.id = average_ratings.resource_id
     WHERE resources.id = $${queryParams.length}
-    GROUP BY resources.id, users.username, users.profile_pic;
+    GROUP BY resources.id, average_ratings.average_rating, users.username, users.profile_pic;
   `;
 
   return db
