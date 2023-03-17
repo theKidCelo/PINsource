@@ -64,8 +64,9 @@ $(() => {
       url: `/api/resources/${resource_id}/ratings`,
       data: { rating }
     }).done(averageRating => {
-      console.log(averageRating),
-      $(`#avg_rating_of_${resource_id}`).text(averageRating.round);
+      $(`#avg_rating_of_${resource_id}`).text(
+        `Avg Rating: ${averageRating.round}`
+      );
     });
   });
 });

@@ -31,7 +31,7 @@ module.exports = db => {
 
     dbHelperFunctions.getAllResources(db, options, 60).then(data => {
       const user = res.locals.user;
-      res.render("index", { data, user });
+      res.render("my-resources", { data, user });
       // res.render("index", { data });
       res.status(200);
     });
