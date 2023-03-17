@@ -68,8 +68,10 @@ module.exports = db => {
   });
 
   router.post("/me", (req, res) => {
-    const { ...newParams } = req.body;
-    newParams.userId = req.session.userId;
+    const { ...newUserParams } = req.body;
+    newUserParams.userId = req.session.userId;
+
+    console.log("this: ", newUserParams);
 
     dbHelperFunctions.updateUserWithId(db, newUserParams).then(user => {
       res.render("usersProfile", user);

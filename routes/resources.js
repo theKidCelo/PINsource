@@ -1,7 +1,7 @@
 const dbHelperFunctions = require("../db/queries/users_resources");
 const express = require("express");
 const router = express.Router();
-const auth = require("../middleware/auth");
+const auth = require("../lib/auth-middleware");
 
 module.exports = db => {
   router.get("/", auth, (req, res) => {

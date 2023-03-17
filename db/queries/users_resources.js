@@ -62,7 +62,7 @@ const updateUserWithId = function(db, newUserParams) {
     }
   }
   if (newUserParams.password) {
-    queryParams.push(`${newUserParams.password}`);
+    queryParams.push(`${bcrypt.hashSync(newUserParams.password, 10)}`);
     if (queryParams.length > 1) {
       queryString += `, password = $${queryParams.length} `;
     } else {

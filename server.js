@@ -8,7 +8,7 @@ const morgan = require('morgan');
 const bodyParser = require("body-parser");
 const cookieSession = require("cookie-session");
 const dbHelperFunctions = require("./db/queries/users_resources");
-const auth = require("./middleware/auth");
+const auth = require("./lib/auth-middleware");
 
 
 const PORT = process.env.PORT || 8080;
