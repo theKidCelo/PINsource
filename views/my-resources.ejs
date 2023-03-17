@@ -26,83 +26,74 @@
       integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
       crossorigin="anonymous"
     ></script>
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.0.5/gsap.min.js"
+    ></script>
     <script type="text/javascript" src="/scripts/app.js"></script>
-    <script type="text/javascript" src="/scripts/expandedResource.js"></script>
-    <title>NOTES - Edit Post</title>
+
+    <title>NOTES - Home Page</title>
   </head>
+
   <body>
     <%-include("./partials/header") %>
-    <div class="post-sidebar">
-      <div class="card">
+
+    <div class="card-columns">
+      <% for(const el of data) { %>
+      <div class="card" height="500px">
         <header>
           <div>
             <img
               class="img-thumbnail"
-              src="<%= data[0].owner_profile_pic %>"
+              src="<%= el.user_profile_pic %>"
               alt="User profile picture"
             />
-            <p><%= data[0].owner_name %></p>
+            <p class="user_name">Posted by: <%= el.user_name %></p>
           </div>
+          <% if(el.user_id === user.id) { %>
           <div>
-            <% if(data[0].owner_id === user.id) { %>
-            <div>
-              <a href="/api/resources/edit/<%= data[0].id %>"
-                ><i class="far fa-edit"></i
-              ></a>
-              <form
-                action="/api/resources/delete/<%= data[0].id %>"
-                method="POST"
-              >
-                <button type="submit">
-                  <i class="far fa-trash-alt"></i>
-                </button>
-              </form>
-            </div>
-            <% } %>
+            <form action="/api/resources/delete/<%= el.id %>" method="POST">
+              <button type="submit">
+                <i class="far fa-trash-alt"></i>
+              </button>
+            </form>
           </div>
+          <% } %>
         </header>
-        <form
-          class="card-body"
-          action="/api/resources/edit/<%= data[0].id %>"
-          method="POST"
-        >
+        <div class="card-body">
           <content>
-            <div>
-              <a href="<%= data[0].url %>" target="#blank">
-                <h5 class="card-title"><%= data[0].title %></h5>
-              </a>
-            </div>
-            <div>
-              <p class="card-text"><%= data[0].description %></p>
-            </div>
+            <a href="<%= el.url %>" target="#blank">
+              <h5 class="card-title"><%= el.title %></h5>
+            </a>
+            <p class="card-text"><%= el.description %></p>
           </content>
-          <div class="picture-area">
-            <img
-              class="img-thumbnail"
-              src="<%= data[0].category_thumbnail %>"
-              width="200px"
-              height="200px"
-              alt="Category image"
-            />
-          </div>
-        </form>
-        <footer class="text-muted">
+          <img
+            class="img-thumbnail"
+            src="<%= el.category_thumbnail %>"
+            width="100px"
+            height="100px"
+            alt="Category image"
+          />
+        </div>
+        <footer style="font-size: 0.8rem" class="text-muted">
           <div class="likes-section">
-            <i id="<%= data[0].id %>" <% if(user.likes.includes(data[0].id)) {%>
+            <i id="<%= el.id %>" <% if(user.likes.includes(el.id)) {%>
               class="liked fas fa-heart" <% } else { %> class="not-liked fas
               fa-heart" <% } %>></i
             >
-            <p><%= data[0].number_of_likes %></p>
+            <p><%= el.number_of_likes %></p>
           </div>
-
-          <div>Avg. Rating: <%= data[0].average_rating %></div>
+          <a href="/api/resources/<%= el.id %>"
+            ><i class="far fa-comment-dots"></i
+          ></a>
+            <p style="margin-bottom: 0" id="avg_rating_of_<%= el.id %>">Avg. Rating: <%= el.average_rating %></p>
           <form class="rating">
             <input
               id="rating-5_<%= el.id %>"
               type="radio"
               name="rating"
               value="5"
-              <% for(rating of user.ratings) {%> <% if(rating[0] == data[0].id) { %> <% if(rating[1] == 5) { %> <%="checked" %> <% } %> <% } %> <% } %> />
+              <% for(rating of user.ratings) {%> <% if(rating[0] == el.id) { %> <% if(rating[1] == 5) { %> <%="checked" %> <% } %> <% } %> <% } %> />
             <label for="rating-5_<%= el.id %>"
               ><i class="fas fa-star"></i
             ></label>
@@ -111,7 +102,7 @@
               type="radio"
               name="rating"
               value="4"
-              <% for(rating of user.ratings) {%> <% if(rating[0] == data[0].id) { %> <% if(rating[1] == 4) { %> <%="checked" %> <% } %> <% } %> <% } %> />
+              <% for(rating of user.ratings) {%> <% if(rating[0] == el.id) { %> <% if(rating[1] == 4) { %> <%="checked" %> <% } %> <% } %> <% } %> />
             <label for="rating-4_<%= el.id %>"
               ><i class="fas fa-star"></i
             ></label>
@@ -120,7 +111,7 @@
               type="radio"
               name="rating"
               value="3"
-              <% for(rating of user.ratings) {%> <% if(rating[0] == data[0].id) { %> <% if(rating[1] == 3) { %> <%="checked" %> <% } %> <% } %> <% } %> />
+              <% for(rating of user.ratings) {%> <% if(rating[0] == el.id) { %> <% if(rating[1] == 3) { %> <%="checked" %> <% } %> <% } %> <% } %> />
             <label for="rating-3_<%= el.id %>"
               ><i class="fas fa-star"></i
             ></label>
@@ -129,7 +120,7 @@
               type="radio"
               name="rating"
               value="2"
-              <% for(rating of user.ratings) {%> <% if(rating[0] == data[0].id) { %> <% if(rating[1] == 2) { %> <%="checked" %> <% } %> <% } %> <% } %> />
+              <% for(rating of user.ratings) {%> <% if(rating[0] == el.id) { %> <% if(rating[1] == 2) { %> <%="checked" %> <% } %> <% } %> <% } %> />
             <label for="rating-2_<%= el.id %>"
               ><i class="fas fa-star"></i
             ></label>
@@ -138,28 +129,27 @@
               type="radio"
               name="rating"
               value="1"
-              <% for(rating of user.ratings) {%> <% if(rating[0] == data[0].id) { %> <% if(rating[1] == 1) { %> <%="checked" %> <% } %> <% } %> <% } %> />
+              <% for(rating of user.ratings) {%> <% if(rating[0] == el.id) { %> <% if(rating[1] == 1) { %> <%="checked" %> <% } %> <% } %> <% } %> />
             <label for="rating-1_<%= el.id %>"
               ><i class="fas fa-star"></i
             ></label>
           </form>
-
-          <%= data[0].created_at_pst %>
         </footer>
       </div>
+      <% } %>
     </div>
-    <div class="comments-container">
-      <form id="postComment">
-        <textarea
-          id="commentText"
-          name="text"
-          placeholder="What's on your mind?"
-        ></textarea>
-        <div>
-          <input class="button" type="submit" value="Comment" />
-        </div>
-      </form>
-      <section id="all-comments"></section>
-    </div>
+
+    <footer class="footer-faded"></footer>
+
+    <script>
+      const tl = gsap.timeline({ repeat: 0 });
+      tl.staggerFromTo(
+        ".card",
+        1,
+        { opacity: 0, scale: 0.85, y: 50 },
+        { opacity: 1, scale: 1, y: 0 },
+        0.05
+      );
+    </script>
   </body>
 </html>
