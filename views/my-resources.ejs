@@ -46,7 +46,7 @@
       <div class="carousel-inner">
 
         <% for(let i = 0; i < data.length; i ++) {%>
-          <% if(data[i].owner_id === user.id) {%>
+          <% if(data[i].user_id === user.id) {%>
              <% if(i === 0) {%>
               <div class="card carousel-item active"
              <% } else {%>
@@ -57,16 +57,13 @@
           <div>
             <img
               class="img-thumbnail"
-              src="<%= data[i].owner_profile_pic %>"
+              src="<%= data[i].user_profile_pic %>"
               alt="User profile picture"
             />
-            <p class="owner_name">Posted by: <%= data[i].owner_name %></p>
+            <p class="user_name">Posted by: <%= data[i].user_name %></p>
           </div>
-          <% if(data[i].owner_id === user.id) { %>
+          <% if(data[i].user_id === user.id) { %>
           <div>
-            <a href="/api/resources/edit/<%= data[i].id %>"
-              ><i class="far fa-edit"></i
-            ></a>
             <form action="/api/resources/delete/<%= data[i].id %>" method="POST">
               <button type="submit">
                 <i class="far fa-trash-alt"></i>
@@ -109,16 +106,13 @@
           <div>
             <img
               class="img-thumbnail"
-              src="<%= likesArr[i].owner_profile_pic %>"
+              src="<%= likesArr[i].user_profile_pic %>"
               alt="User profile picture"
             />
-            <p class="owner_name">Posted by: <%= likesArr[i].owner_name %></p>
+            <p class="user_name">Posted by: <%= likesArr[i].user_name %></p>
           </div>
-          <% if(likesArr[i].owner_id === user.id) { %>
+          <% if(likesArr[i].user_id === user.id) { %>
           <div>
-            <a href="/api/resources/edit/<%= likesArr[i].id %>"
-              ><i class="far fa-edit"></i
-            ></a>
             <form action="/api/resources/delete/<%= likesArr[i].id %>" method="POST">
               <button type="submit">
                 <i class="far fa-trash-alt"></i>

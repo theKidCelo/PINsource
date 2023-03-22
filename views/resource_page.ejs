@@ -38,13 +38,13 @@
           <div>
             <img
               class="img-thumbnail"
-              src="<%= data[0].owner_profile_pic %>"
+              src="<%= data[0].user_profile_pic %>"
               alt="User profile picture"
             />
-            <p><%= data[0].owner_name %></p>
+            <p><%= data[0].user_name %></p>
           </div>
           <div>
-            <% if(data[0].owner_id === user.id) { %>
+            <% if(data[0].user_id === user.id) { %>
             <div>
               <a href="/api/resources/edit/<%= data[0].id %>"
                 ><i class="far fa-edit"></i
