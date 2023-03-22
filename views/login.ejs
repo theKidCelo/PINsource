@@ -19,7 +19,6 @@
   </head>
 
   <body>
-    <%-include("./partials/header") %>
     <main style="margin: 1em">
       <h3 style="margin-bottom: 1em">Log Into Your Account</h3>
       <form action="/api/users/login" method="POST">
@@ -29,7 +28,7 @@
             class="form-control"
             type="email"
             name="email"
-            placeholder="generic@email.com"
+            placeholder="example@email.com"
             style="width: 300px; margin-bottom: 1em"
             maxlength="50"
             required
@@ -39,7 +38,6 @@
             class="form-control"
             type="password"
             name="password"
-            placeholder="secure password"
             style="width: 300px; margin-bottom: 1em"
             maxlength="50"
             required
@@ -47,7 +45,7 @@
           <button type="submit" class="btn btn-primary">Log In</button>
         </div>
       </form>
-        <a href="/register" class="btn btn-primary">Register</a>
+        <a href="/api/users/register" class="btn btn-primary">Register</a>
     </main>
     <!-- Bootstrap JS -->
     <script

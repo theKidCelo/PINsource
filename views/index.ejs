@@ -72,16 +72,7 @@
         </div>
         <footer style="font-size: 0.8rem" class="text-muted">
 
-        <div class="likes-section">
-          <i id="<%= el.id %>"
-          <% if(user.liked_resources.includes(el.id)) {%>
-            class="liked fas fa-heart"
-          <% } else {%>
-            class="not-liked fas fa-heart"
-          <% }%>
-          ></i>
-          <p><%= el.number_of_likes %></p>
-        </div>
+
           <a href="/api/resources/<%= el.id %>"
             ><i class="far fa-comment-dots"></i
           ></a>
@@ -92,7 +83,7 @@
               type="radio"
               name="rating"
               value="5"
-              <% for(rating of user.ratings) {%> <% if(rating[0] == el.id) { %> <% if(rating[1] == 5) { %> <%="checked" %> <% } %> <% } %> <% } %> />
+              <% for(let rating of ratings) {%> <% if(rating[0] == el.id) { %> <% if(rating[1] == 5) { %> <%="checked" %> <% } %> <% } %> <% } %> />
             <label for="rating-5_<%= el.id %>"
               ><i class="fas fa-star"></i
             ></label>

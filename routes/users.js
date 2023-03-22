@@ -14,7 +14,7 @@ module.exports = db => {
 
 //----------------------login----------------------------//
 
-  router.get("/login", (req, res) => {
+  router.get("/api/users/login", (req, res) => {
     //if they are already signed in
     if (req.session.userId) {
       res.redirect("/");
@@ -23,12 +23,12 @@ module.exports = db => {
     res.render("login");
   });
 
-  router.get("/logout", (req, res) => {
+  router.get("api/users/logout", (req, res) => {
     req.session.userId = null;
     res.redirect("login");
   });
 
-  router.post("/login", (req, res) => {
+  router.post("/api/users/login", (req, res) => {
     const loginInput = req.body;
     dbHelperFunctions
       .getUserWithEmail(db, loginInput)
@@ -50,7 +50,7 @@ module.exports = db => {
   router.get("/me", auth, (req, res) => {
     const userId = req.session.userId;
     if (!userId) {
-      res.redirect("/login");
+      res.redirect("/api/users/login");
       return;
     }
 
@@ -77,14 +77,14 @@ module.exports = db => {
 
   //---------------------new user-------------------------//
 
-  router.get("/register", (req, res) => {
+  router.get("/api/users/register", (req, res) => {
     if (req.session.userId) {
       res.redirect("/");
     }
     res.render("register");
   });
 
-  router.post("/register", (req, res) => {
+  router.post("/api/users/register", (req, res) => {
     const newUserParams = req.body;
     dbHelperFunctions.addUser(db, newUserParams).then(user => {
       req.session.userId = user.id;
